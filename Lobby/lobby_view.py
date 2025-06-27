@@ -1,0 +1,41 @@
+import pygame
+from Interfaces.view_interface import ViewInterface
+from Lobby.lobby_player_list import PlayerList
+from Lobby.lobby_game_list import GameList
+from Lobby.lobby_middle_box import MiddleBox
+from Views_Assets.neon_box import NeonBox
+from Orchestrator.orchestrator import Orchestrator
+from Enums.image_path_enum import ImagePath
+
+class LobbyView(ViewInterface):
+    def __init__(self, screen, model, orchestrator: Orchestrator):
+        self.screen = screen
+        self.model = model
+        self.orchestrator = orchestrator
+        self.show_game_settings_box = True
+        
+        self.player_box = NeonBox(screen, overlay_fill_RGBA= (0,0,0,170), position= (50, 50))
+        self.game_box = NeonBox(screen, position=(930, 50), overlay_fill_RGBA= (0,0,0,170))
+        self.player_list = PlayerList(screen, orchestrator)
+        self.game_settings_box = MiddleBox(screen, orchestrator)
+        self.game_list = GameList(screen, orchestrator)
+        
+        # set caption
+        pygame.display.set_caption("Pong")
+        
+        # Load your background image (save it as instance variable)
+        self.background = pygame.image.load(ImagePath.LOBBY.value).convert()
+        
+    def render(self):
+                # First draw background
+        self.screen.blit(self.background, (0, 0))
+        
+        # self.screen.fill((0, 0, 0))
+
+        self.player_box.render()
+        self.player_list.render()
+        self.game_box.render()
+        self.game_list.render()
+        
+        if self.show_game_settings_box:
+            self.game_settings_box.render()

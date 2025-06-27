@@ -1,9 +1,10 @@
 from abc import ABC, abstractmethod
 
 class ViewInterface(ABC):
-    def __init__(self, screen, model):
+    def __init__(self, screen, model, orchestrator):
         self.screen = screen
         self.model = model
+        self.orchestrator = orchestrator
         
     @abstractmethod
     def render(self):
