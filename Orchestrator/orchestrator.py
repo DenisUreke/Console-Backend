@@ -2,15 +2,18 @@ import asyncio
 import json
 from Models.player import Player
 from Enums.state_enum import State
-from game_master.game_master import GameMaster
+from Enums.music_enum import Music
+from Sound_Manager.sound_manager import SoundManager
+
+
 
 class Orchestrator:
-    def __init__(self, game_master: GameMaster):
+    def __init__(self, sound_manager: SoundManager):
         self.websocket_server = None
         self.players: Player = []
         self.next_player_number = 1
-        self.game_master = game_master
         self.selected_game = State.LOBBY
+        self.sound_manager = sound_manager
         
         self._state = State.LOBBY
 
@@ -18,6 +21,12 @@ class Orchestrator:
             "player_join": self.handle_player_join,
             "change_leader": self.change_leader,
             "player_controls": self.handle_player_controls,
+        }
+        self.state_music_map = {
+            State.LOBBY: Music.LOBBY,
+            State.PONG: Music.NONE,
+            State.TEAM_SELECTION: Music.TEAM_SELECTION,
+            # Add future mappings here
         }
         
     @property
@@ -135,6 +144,21 @@ class Orchestrator:
             self.state = State.TEAM_SELECTION
         else:
             self.state = state
+            
+    def change_music_according_to_state(self, state: State):
+        music_enum = self.state_music_map.get(state, None)
+        
+        if music_enum==Music.NONE:
+            self.stop_music()
+        else:
+            self.play_music(music_enum= music_enum)
+            
+        
+    def play_music(self, music_enum, loop=-1):
+        self.sound_manager.play_music(music_enum.value, loop)
+    
+    def stop_music(self):
+        self.sound_manager.stop_music()
                 
         
         
