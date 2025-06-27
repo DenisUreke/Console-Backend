@@ -3,7 +3,7 @@ import websockets
 import json
 import logging
 import threading
-from orchestrator.orchestrator import Orchestrator
+from Orchestrator.orchestrator import Orchestrator
 from Enums.state_enum import State
 
 # Set up logging
