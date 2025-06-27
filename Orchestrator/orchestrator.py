@@ -1,16 +1,16 @@
 import asyncio
 import json
-from Models.player import Player
 from Enums.state_enum import State
 from Enums.music_enum import Music
 from Sound_Manager.sound_manager import SoundManager
+from Player_Manager.player_manager import PlayerManager
 
 
 
 class Orchestrator:
-    def __init__(self, sound_manager: SoundManager):
+    def __init__(self, sound_manager: SoundManager, player_manager: PlayerManager):
         self.websocket_server = None
-        self.players: Player = []
+        self.player_manager = player_manager
         self.next_player_number = 1
         self.selected_game = State.LOBBY
         self.sound_manager = sound_manager

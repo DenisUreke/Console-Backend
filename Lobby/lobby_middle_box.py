@@ -2,7 +2,7 @@ import pygame
 from Views_Assets.neon_box import NeonBox
 from Orchestrator.orchestrator import Orchestrator
 
-class GameSettingsBox:
+class MiddleBox:
     def __init__ (self, screen, orchestrator: Orchestrator):
         self.screen = screen
         self.orchestrator = orchestrator

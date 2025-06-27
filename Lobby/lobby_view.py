@@ -16,7 +16,7 @@ class LobbyView(ViewInterface):
         
         self.player_box = NeonBox(screen, overlay_fill_RGBA= (0,0,0,170), position= (50, 50))
         self.game_box = NeonBox(screen, position=(930, 50), overlay_fill_RGBA= (0,0,0,170))
-        self.player_list = PlayerList(screen, orchestrator)
+        self.player_list = PlayerList(screen, model)
         self.game_settings_box = MiddleBox(screen, orchestrator)
         self.game_list = GameList(screen, orchestrator)
         
