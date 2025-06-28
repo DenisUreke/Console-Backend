@@ -2,18 +2,22 @@ import asyncio
 import json
 from Enums.state_enum import State
 from Enums.music_enum import Music
+from Enums.controller_enum import ControllerType
 from Sound_Manager.sound_manager import SoundManager
 from Player_Manager.player_manager import PlayerManager
+from Message_Parser.message_parser import MessageParser
+from Broadcasting_Manager.broadcasting_manager import BroadcastingManager
 
 
 
 class Orchestrator:
-    def __init__(self, sound_manager: SoundManager, player_manager: PlayerManager):
+    def __init__(self, sound_manager: SoundManager, player_manager: PlayerManager, message_parser: MessageParser, broadcasting_manager: BroadcastingManager):
         self.websocket_server = None
         self.player_manager = player_manager
-        self.next_player_number = 1
+        self.message_parser = message_parser
         self.selected_game = State.LOBBY
         self.sound_manager = sound_manager
+        self.broadcasting_manager = broadcasting_manager
         
         self._state = State.LOBBY
 
@@ -28,6 +32,11 @@ class Orchestrator:
             State.TEAM_SELECTION: Music.TEAM_SELECTION,
             # Add future mappings here
         }
+        self.state_controller_map = {
+            State.LOBBY: ControllerType.STANDARD_CONTROLLER
+        }
+        
+        self.selected_controller = self.state_controller_map.get(self._state, ControllerType.STANDARD_CONTROLLER)
         
     @property
     def state(self):
@@ -51,46 +60,22 @@ class Orchestrator:
         else:
             print(f"Unknown message type: {message_type}")
 
-    def handle_player_join(self, websocket, payload):
+    def handle_player_join(self, websocket, payload): ### KLAR
+        
         name = payload.get("name")
-    
-        is_leader = self.assign_leader()
-    
-        player = Player(websocket, name, self.next_player_number, is_leader)    
-        self.players.append(player)
-        self.next_player_number += 1
-    
+        self.player_manager.create_and_append_player(name, websocket)
         self.broadcast_player_list()
-    
-        leader_text = " (LEADER)" if is_leader else ""
-        print(f"Player joined: {name} as Player {player.player_number}{leader_text}")
-
-    def assign_leader(self):
-        return len(self.players) == 0
-    
-    def re_assign_leader(self):
-        if len(self.players) > 0 and not any(player.is_leader for player in self.players):
-            self.players[0].is_leader = True
             
-    def change_leader(self, websocket, payload):
+    def change_leader(self, websocket, payload): ########### KLAR
+        
         name = payload.get("name")
-        player = next((p for p in self.players if p.name == name), None)
-        if player:
-            for p in self.players:
-                p.is_leader = False
-            player.is_leader = True
-            self.broadcast_player_list()
-            print(f"Leader changed to: {name}")
+        self.player_manager.change_leader(name)
+        self.broadcast_player_list()
 
-    def handle_player_disconnect(self, websocket):
-        new_list = []
+    def handle_player_disconnect(self, websocket): ### KLAR
         
-        for p in self.players:
-            if p.websocket != websocket:
-                new_list.append(p)
-        
-        self.players = new_list
-        self.re_assign_leader()
+        self.player_manager.update_list_by_websocket_connections(websocket)
+        self.player_manager.re_assign_leader()
         self.broadcast_player_list()
         print("Player disconnected and removed")
         
@@ -100,43 +85,10 @@ class Orchestrator:
         self.game_master.handle_player_controls(payload, websocket)
         
     
-    def broadcast_player_list(self):
-        player_list = []
-        for player in self.players:
-            player_list.append({
-                "name": player.name,
-                "player_number": player.player_number,
-                "is_leader": player.is_leader,
-                "player_score": player.player_score,
-                "player_lives": player.player_lives
-            })
-        message = {
-            "type": "player_list_update",
-            "data": {
-                "players": player_list,
-                "player_count": len(self.players)
-            }
-        }
-        # Convert to JSON
-        message_json = json.dumps(message)
+    def broadcast_player_list(self): #### Klar
         
-        if self.websocket_server:
-        # Create tasks for all clients
-            for websocket in self.websocket_server.clients:
-                try:
-                    # Use asyncio to send the message
-                    asyncio.create_task(websocket.send(message_json))
-                except Exception as e:
-                    print(f"Error broadcasting to client: {e}")
-                    
-    def broadcast_message_from_game_master(self, payload):
-        if self.websocket_server:
-            
-            for websocket in self.websocket_server.clients:
-                try:
-                    asyncio.create_task(websocket.send(payload))
-                except Exception as e:
-                    print(f"Error broadcasting to client: {e}")
+        message_json = self.message_parser.get_parsed_player_list(self.player_manager)
+        self.broadcasting_manager.broadcast_player_list_async(self.websocket_server, message_json)
                              
     def change_state(self, state):
         if self.state == State.LOBBY:
