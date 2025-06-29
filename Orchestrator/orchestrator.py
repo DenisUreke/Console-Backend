@@ -2,22 +2,38 @@ import asyncio
 import json
 from Enums.state_enum import State
 from Enums.music_enum import Music
-from Enums.controller_enum import ControllerType
+from Enums.js_controller_enum import JsControllerType
 from Sound_Manager.sound_manager import SoundManager
 from Player_Manager.player_manager import PlayerManager
 from Message_Parser.message_parser import MessageParser
 from Broadcasting_Manager.broadcasting_manager import BroadcastingManager
+from Controller_Functions.Controller_Translator.controller_translator import ControllerTranslator
+from Lobby.lobby_controller import LobbyController
+from Lobby.lobby_view import LobbyView
+from Lobby.lobby_model import LobbyModel
 
 
 
 class Orchestrator:
-    def __init__(self, sound_manager: SoundManager, player_manager: PlayerManager, message_parser: MessageParser, broadcasting_manager: BroadcastingManager):
+    def __init__(
+        self,
+        screen,
+        sound_manager: SoundManager, 
+        player_manager: PlayerManager, 
+        message_parser: MessageParser, 
+        broadcasting_manager: BroadcastingManager,
+        controller_translator: ControllerTranslator
+        ):
+        
+        self.screen = screen
         self.websocket_server = None
         self.player_manager = player_manager
         self.message_parser = message_parser
         self.selected_game = State.LOBBY
         self.sound_manager = sound_manager
         self.broadcasting_manager = broadcasting_manager
+        self.controller_translator = controller_translator
+        self.current_controller = None
         
         self._state = State.LOBBY
 
@@ -32,11 +48,30 @@ class Orchestrator:
             State.TEAM_SELECTION: Music.TEAM_SELECTION,
             # Add future mappings here
         }
-        self.state_controller_map = {
-            State.LOBBY: ControllerType.STANDARD_CONTROLLER
+        self.state_jscontroller_map = {
+            State.LOBBY: JsControllerType.JS_STANDARD_CONTROLLER
         }
         
-        self.selected_controller = self.state_controller_map.get(self._state, ControllerType.STANDARD_CONTROLLER)
+        self.controller_factory_map = {
+            State.LOBBY: lambda: LobbyController(
+                self.screen,
+                self,
+                self.sound_manager,
+                LobbyModel()
+        ),
+            # Add more states/controllers here
+        }
+
+        self.view_factory_map = {
+            State.LOBBY: lambda model: LobbyView(
+                self.screen,
+                model,
+                self
+        ),
+            # Add more states/views here
+        }
+        
+        self.selected_controller = self.state_jscontroller_map.get(self._state, JsControllerType.JS_STANDARD_CONTROLLER)
         
     @property
     def state(self):
@@ -45,6 +80,28 @@ class Orchestrator:
     @state.setter
     def state(self, value):
         self._state = value
+        
+        # creating the correct controller based on State
+        controller_factory = self.controller_factory_map.get(value)
+        if controller_factory:
+            controller = controller_factory()
+            if self.current_controller:
+                self.current_controller.stop()
+            self.current_controller = controller
+            
+        # creating the correct View based on State
+        view_factory = self.view_factory_map.get(value)
+        if view_factory:
+            self.current_view = view_factory(controller.model)
+            controller.view = self.current_view
+            
+        # change the music according to state
+        self.change_music_according_to_state(value)
+        
+        # set current controller
+        self.selected_controller = self.state_jscontroller_map.get(self._state, JsControllerType.JS_STANDARD_CONTROLLER)
+        
+        # broadcast the state to frontend
         if self.websocket_server:
             self.websocket_server.broadcast_state_sync()
         
@@ -82,13 +139,19 @@ class Orchestrator:
         # function that handles player input
     def handle_player_controls(self, websocket, payload):
         
-        self.game_master.handle_player_controls(payload, websocket)
+        translated_payload = self.controller_translator.get_extracted_controller_values(
+            controller_type=self.selected_controller,
+            payload=payload
+        )
+        # Here i se the factory controller and send the data.
+        self.current_controller.handle_input(translated_payload)
+        
         
     
     def broadcast_player_list(self): #### Klar
         
         message_json = self.message_parser.get_parsed_player_list(self.player_manager)
-        self.broadcasting_manager.broadcast_player_list_async(self.websocket_server, message_json)
+        self.broadcasting_manager.broadcast_to_all_connected(self.websocket_server, message_json)
                              
     def change_state(self, state):
         if self.state == State.LOBBY:
@@ -107,6 +170,7 @@ class Orchestrator:
             
         
     def play_music(self, music_enum, loop=-1):
+        self.stop_music()
         self.sound_manager.play_music(music_enum.value, loop)
     
     def stop_music(self):

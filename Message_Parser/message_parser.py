@@ -12,7 +12,9 @@ class MessageParser():
                 "player_number": player.player_number,
                 "is_leader": player.is_leader,
                 "player_score": player.player_score,
-                "player_lives": player.player_lives
+                "player_lives": player.player_lives,
+                "team_selection_position": player.team_selection_position,
+                "is_in_game": player.is_in_game
             })
         message = {
             "type": "player_list_update",
@@ -25,4 +27,3 @@ class MessageParser():
         message_json = json.dumps(message)
         
         return message_json
-        

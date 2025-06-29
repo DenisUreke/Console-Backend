@@ -4,7 +4,7 @@ class BroadcastingManager():
     def __init__(self):
         pass
 
-    def broadcast_player_list_async(self, websocket_server, message_json):
+    def broadcast_to_all_connected(self, websocket_server, message_json):
         if websocket_server:
             # Create tasks for all clients
             for websocket in websocket_server.clients:
