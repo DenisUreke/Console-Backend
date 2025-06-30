@@ -19,8 +19,28 @@ class LobbyController(ControllerInterface):
         pass
 
     def handle_input(self, event):
-        '''Handle input from user'''
-        pass
+        event_type = event.get("type")
+        
+        match event_type:
+            case "joystick_move":
+                translated_direction = event.get("translated_direction")
+                direction = event.get("direction")
+                distance = event.get("distance")
+                player_number = event.get("player_number")
+                self.handle_joystick_move(translated_direction, direction, distance)
+                
+            case "joystick_release":
+                released = event.get("released")
+                player_number = event.get("player_number")
+                self.handle_joystick_release(released, player_number)
+                              
+            case "button_press":
+                button = event.get("button")
+                player_number = event.get("player_number")
+                self.handle_button_click(button, player_number)
+                
+            case _:
+                print(f"Unknown event type: {event_type}")
 
     def update(self):
         '''Update game logic (movement, collisions, scores)'''
@@ -37,3 +57,13 @@ class LobbyController(ControllerInterface):
         
     def change_selected_game(self, current: Game):
         self.model.current_game_selected = current
+    
+    def handle_joystick_move(self, translated_directon, direction, distance, player_number):
+        pass
+    
+    def handle_joystick_release(self, release, player_number):
+        pass
+    
+    def handle_button_click(self, button, player_number):
+        pass
+        
