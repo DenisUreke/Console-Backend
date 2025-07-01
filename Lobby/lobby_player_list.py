@@ -8,7 +8,7 @@ class PlayerList:
 
     def render(self):
         y = 100
-        for player in self.orchestrator.players:
+        for player in self.orchestrator.player_manager.players:
             # Create the player text
             text = self.font.render(f"{player.name}", True, (0, 255, 255))
             

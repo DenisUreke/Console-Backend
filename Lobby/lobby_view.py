@@ -4,11 +4,13 @@ from Lobby.lobby_player_list import PlayerList
 from Lobby.lobby_game_list import GameList
 from Lobby.lobby_middle_box import MiddleBox
 from Views_Assets.neon_box import NeonBox
-from Orchestrator.orchestrator import Orchestrator
 from Enums.image_path_enum import ImagePath
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from Orchestrator.orchestrator import Orchestrator
 
 class LobbyView(ViewInterface):
-    def __init__(self, screen, model, orchestrator: Orchestrator):
+    def __init__(self, screen, model, orchestrator: 'Orchestrator'):
         self.screen = screen
         self.model = model
         self.orchestrator = orchestrator
@@ -16,9 +18,9 @@ class LobbyView(ViewInterface):
         
         self.player_box = NeonBox(screen, overlay_fill_RGBA= (0,0,0,170), position= (50, 50))
         self.game_box = NeonBox(screen, position=(930, 50), overlay_fill_RGBA= (0,0,0,170))
-        self.player_list = PlayerList(screen, model)
-        self.game_settings_box = MiddleBox(screen, orchestrator)
-        self.game_list = GameList(screen, orchestrator)
+        self.player_list = PlayerList(screen, orchestrator)
+        self.game_settings_box = MiddleBox(screen, model)
+        self.game_list = GameList(screen, model)
         
         # set caption
         pygame.display.set_caption("Pong")

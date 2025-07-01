@@ -1,11 +1,11 @@
 import pygame
 from Views_Assets.neon_box import NeonBox
-from Orchestrator.orchestrator import Orchestrator
+from Lobby.lobby_model import LobbyModel
 
 class MiddleBox:
-    def __init__ (self, screen, orchestrator: Orchestrator):
+    def __init__ (self, screen, model: LobbyModel):
         self.screen = screen
-        self.orchestrator = orchestrator
+        self.model = model
         
         self.starting_pos = pygame.Vector2(400, -800)
         self.end_pos = pygame.Vector2(400, 50)
@@ -38,7 +38,7 @@ class MiddleBox:
         game_settings_box.render()
 
         # Get the game name string
-        game_name = self.orchestrator.game_master.lobby_controller.lobby_model.current_game_selected.value
+        game_name = self.model.current_game_selected.value
 
         # Render the text to a surface
         text_surface = self.font.render(game_name, True, (255, 255, 255))

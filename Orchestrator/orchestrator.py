@@ -34,8 +34,7 @@ class Orchestrator:
         self.broadcasting_manager = broadcasting_manager
         self.controller_translator = controller_translator
         self.current_controller = None
-        
-        self._state = State.LOBBY
+        self.current_view = None
 
         self.message_handlers = {
             "player_join": self.handle_player_join,
@@ -70,6 +69,8 @@ class Orchestrator:
         ),
             # Add more states/views here
         }
+        
+        self.state = State.LOBBY
         
         self.selected_controller = self.state_jscontroller_map.get(self._state, JsControllerType.JS_STANDARD_CONTROLLER)
         
