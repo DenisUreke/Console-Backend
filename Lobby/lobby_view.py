@@ -25,11 +25,13 @@ class LobbyView(ViewInterface):
         # set caption
         pygame.display.set_caption("Pong")
         
-        # Load your background image (save it as instance variable)
-        self.background = pygame.image.load(ImagePath.LOBBY.value).convert()
+        # Load background image
+        original_bg = pygame.image.load(ImagePath.LOBBY.value).convert()
+        self.background = pygame.transform.scale(original_bg, self.screen.get_size())
         
     def render(self):
-                # First draw background
+        
+        # First draw background idiot
         self.screen.blit(self.background, (0, 0))
         
         # self.screen.fill((0, 0, 0))

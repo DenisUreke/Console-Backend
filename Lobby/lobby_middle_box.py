@@ -7,26 +7,14 @@ class MiddleBox:
         self.screen = screen
         self.model = model
         
-        self.starting_pos = pygame.Vector2(400, -800)
-        self.end_pos = pygame.Vector2(400, 50)
-        self.position = self.starting_pos.copy()
-        self.speed = 10
-        self.moving = True
+        self.starting_pos = self.model.starting_pos
+        self.end_pos = self.model.end_pos
+        self.position = self.model.position
+        self.speed = 10 ## till controller
+        self.moving = self.model.ms_start_moving
         self.font = pygame.font.Font(None, 56)
         pygame.font.init()
-    
-    def start_moving(self):
-        self.moving = True
-        
-    def update(self):
-        if self.moving:
-            direction = self.end_pos - self.position
-            if direction.length() < self.speed:
-                self.position = self.end_pos
-                self.moving = False
-            else:
-                self.position += direction.normalize() * self.speed
-        
+         
     def render(self):
         # Create and render the NeonBox first
         game_settings_box = NeonBox(

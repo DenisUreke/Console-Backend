@@ -43,8 +43,14 @@ class LobbyController(ControllerInterface):
                 print(f"Unknown event type: {event_type}")
 
     def update(self):
-        '''Update game logic (movement, collisions, scores)'''
-        pass
+        
+        if self.model.ms_start_moving:
+            direction = self.model.end_pos - self.model.position
+            if direction.length() < self.model.ms_speed:
+                self.model.position = self.model.end_pos
+                self.moving = False
+            else:
+                self.model.position += direction.normalize() * self.model.ms_speed
     
     def handle_fx(self, event_name: str):
         '''Play sounds associtiated with game events'''
