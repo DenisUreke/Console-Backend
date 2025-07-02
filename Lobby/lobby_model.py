@@ -14,10 +14,5 @@ class LobbyModel:
         self.ms_start_moving = True
         
         
-        
-        '''        self.starting_pos = pygame.Vector2(400, -800)
-        self.end_pos = pygame.Vector2(400, 50)
-        self.position = self.starting_pos.copy()'''
-        
 
         
