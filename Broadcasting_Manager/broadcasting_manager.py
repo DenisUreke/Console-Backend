@@ -9,6 +9,7 @@ class BroadcastingManager():
             # Create tasks for all clients
             for websocket in websocket_server.clients:
                 try:
+                    # print(f"Broadcasted player list {message_json}")
                     # Use asyncio to send the message
                     asyncio.create_task(websocket.send(message_json))
                 except Exception as e:

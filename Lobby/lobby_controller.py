@@ -27,7 +27,7 @@ class LobbyController(ControllerInterface):
                 direction = event.get("direction")
                 distance = event.get("distance")
                 player_number = event.get("player_number")
-                self.handle_joystick_move(translated_direction, direction, distance)
+                self.handle_joystick_move(translated_direction, direction, distance, player_number)
                 
             case "joystick_release":
                 released = event.get("released")

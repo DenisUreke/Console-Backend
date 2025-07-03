@@ -36,6 +36,7 @@ def initialize_game():
     
     # Initialize Websocket 
     server = WebSocketServer(orchestrator)
+    orchestrator.websocket_server = server
     
     return {
         "clock": clock,
