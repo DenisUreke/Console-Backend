@@ -7,7 +7,6 @@ class MiddleBox:
         self.screen = screen
         self.model = model
         
-        self.starting_pos = self.model.starting_pos
         self.end_pos = self.model.end_pos
         self.position = self.model.position
         self.speed = 10 ## till controller

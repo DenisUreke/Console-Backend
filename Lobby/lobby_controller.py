@@ -65,11 +65,13 @@ class LobbyController(ControllerInterface):
         self.model.current_game_selected = current
     
     def handle_joystick_move(self, translated_directon, direction, distance, player_number):
-        pass
+        if direction == "up" and distance > 50 or direction == "down" and distance > 50:
+            self.model.current_selected_game(direction)
     
     def handle_joystick_release(self, release, player_number):
         pass
     
     def handle_button_click(self, button, player_number):
         pass
+    
         

@@ -6,6 +6,9 @@ class LobbyModel:
         self.game_list: Game = Game
         self.current_game_selected = Game.PONG
         
+        # Game list value
+        self.index = 0
+        
         # middle-screen data
         self.starting_pos = pygame.Vector2(400, -800)
         self.end_pos = pygame.Vector2(400, 50)
@@ -13,6 +16,23 @@ class LobbyModel:
         self.ms_speed = 10
         self.ms_start_moving = True
         
+    def reset_middle_box(self):
+        self.ms_start_moving = False
+        self.position = self.starting_pos
+        self.ms_start_moving = True
+    
+    def current_selected_game(self, direction):
+        
+        if direction == "up":
+            index -= 1
+        if direction == "down":
+            index += 1
+        
+        self.index %= len(self.game_list)
+        self.current_game_selected = self.game_list[self.index]
+            
+        
+         
         
 
         
