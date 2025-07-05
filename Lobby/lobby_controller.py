@@ -2,11 +2,15 @@ import pygame
 from Enums.game_enum import Game
 from Lobby.lobby_model import LobbyModel
 from Interfaces.controller_interface import ControllerInterface
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from Orchestrator.orchestrator import Orchestrator
 
 class LobbyController(ControllerInterface):
     def __init__(self, screen, orchestrator, sound_manager, model: LobbyModel):
         self.screen = screen
-        self.orchestrator = orchestrator
+        self.orchestrator: Orchestrator = orchestrator
         self.sound_manager = sound_manager
         self.model = model
         
@@ -20,6 +24,8 @@ class LobbyController(ControllerInterface):
 
     def handle_input(self, event):
         event_type = event.get("type")
+        player_number = event.get("player_number")
+        
         
         match event_type:
             case "joystick_move":
@@ -73,5 +79,11 @@ class LobbyController(ControllerInterface):
     
     def handle_button_click(self, button, player_number):
         pass
+    
+    def is_leader(self, number):
+        
+        player = next((p for p in self.orchestrator.player_manager.players if p.player_number == number), None)
+        return player.is_leader if player else False
+        
     
         
