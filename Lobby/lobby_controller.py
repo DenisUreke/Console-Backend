@@ -26,27 +26,30 @@ class LobbyController(ControllerInterface):
         event_type = event.get("type")
         player_number = event.get("player_number")
         
+        is_leader = self.is_leader(player_number)
         
-        match event_type:
-            case "joystick_move":
-                translated_direction = event.get("translated_direction")
-                direction = event.get("direction")
-                distance = event.get("distance")
-                player_number = event.get("player_number")
-                self.handle_joystick_move(translated_direction, direction, distance, player_number)
+        if is_leader:
+            
+            match event_type:
+                case "joystick_move":
+                    translated_direction = event.get("translated_direction")
+                    direction = event.get("direction")
+                    distance = event.get("distance")
+                    player_number = event.get("player_number")
+                    self.handle_joystick_move(translated_direction, direction, distance, player_number)
                 
-            case "joystick_release":
-                released = event.get("released")
-                player_number = event.get("player_number")
-                self.handle_joystick_release(released, player_number)
+                case "joystick_release":
+                    released = event.get("released")
+                    player_number = event.get("player_number")
+                    self.handle_joystick_release(released, player_number)
                               
-            case "button_press":
-                button = event.get("button")
-                player_number = event.get("player_number")
-                self.handle_button_click(button, player_number)
+                case "button_press":
+                    button = event.get("button")
+                    player_number = event.get("player_number")
+                    self.handle_button_click(button, player_number)
                 
-            case _:
-                print(f"Unknown event type: {event_type}")
+                case _:
+                    print(f"Unknown event type: {event_type}")
 
     def update(self):
         
