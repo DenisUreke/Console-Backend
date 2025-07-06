@@ -50,6 +50,8 @@ class Orchestrator:
             State.TEAM_SELECTION: Music.TEAM_SELECTION,
             # Add future mappings here
         }
+        
+        #mapping of controller types
         self.state_jscontroller_map = {
             State.LOBBY: JsControllerType.JS_STANDARD_CONTROLLER
         }
@@ -105,7 +107,7 @@ class Orchestrator:
         self.change_music_according_to_state(value)
         
         # set current controller
-        self.selected_controller = self.state_jscontroller_map.get(self._state, JsControllerType.JS_STANDARD_CONTROLLER)
+        self.selected_controller = self.state_jscontroller_map.get(self._state, JsControllerType.JS_STANDARD_CONTROLLER) #  FEL!!!!!!!!!!!!
         
         # broadcast the state to frontend
         if self.websocket_server:

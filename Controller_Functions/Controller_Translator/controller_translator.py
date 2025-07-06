@@ -1,8 +1,10 @@
 from Controller_Functions.Joystick_Handlers.joystick_handlers_STANDARD_CONTROLLER import (
     JoystickMoveHandler_STANDARD,
     JoystickReleaseHandler_STANDARD,
-    ButtonPressHandler_STANDARD
+    ButtonPressHandler_STANDARD,
 )
+from Controller_Functions.Joystick_Handlers.keypad_handlers_STANDARD_KEYPAD import KeypadMoveHandler_STANDARD
+
 from Enums.js_controller_enum import JsControllerType
 
 class ControllerTranslator:
@@ -11,7 +13,11 @@ class ControllerTranslator:
             JsControllerType.JS_STANDARD_CONTROLLER: {
                 "button_press": ButtonPressHandler_STANDARD(),
                 "joystick_move": JoystickMoveHandler_STANDARD(),
-                "joystick_release": JoystickReleaseHandler_STANDARD()
+                "joystick_release": JoystickReleaseHandler_STANDARD(),
+            },
+            JsControllerType.KEYPAD_STANDARD_CONTROLLER: {
+                "keypad_move": KeypadMoveHandler_STANDARD(),
+                "button_press": ButtonPressHandler_STANDARD(),
             }
         }
 
