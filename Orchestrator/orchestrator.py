@@ -52,9 +52,9 @@ class Orchestrator:
         }
         
         #mapping of controller types
-        self.state_jscontroller_map = {
-            State.LOBBY: JsControllerType.JS_STANDARD_CONTROLLER
-        }
+        #self.state_jscontroller_map = {
+            #State.LOBBY: JsControllerType.JS_STANDARD_CONTROLLER
+        #}
         
         self.controller_factory_map = {
             State.LOBBY: lambda: LobbyController(
@@ -77,7 +77,7 @@ class Orchestrator:
         
         self.state = State.LOBBY
         
-        self.selected_controller = self.state_jscontroller_map.get(self._state, JsControllerType.JS_STANDARD_CONTROLLER)
+        #self.selected_controller = self.state_jscontroller_map.get(self._state, JsControllerType.JS_STANDARD_CONTROLLER)
         
         self.database_service.initialize_schema()
         
@@ -107,7 +107,7 @@ class Orchestrator:
         self.change_music_according_to_state(value)
         
         # set current controller
-        self.selected_controller = self.state_jscontroller_map.get(self._state, JsControllerType.JS_STANDARD_CONTROLLER) #  FEL!!!!!!!!!!!!
+        #self.selected_controller = self.state_jscontroller_map.get(self._state, JsControllerType.JS_STANDARD_CONTROLLER) #  FEL!!!!!!!!!!!!
         
         # broadcast the state to frontend
         if self.websocket_server:
@@ -147,7 +147,7 @@ class Orchestrator:
         # function that handles player input
     def handle_player_controls(self, websocket, payload):
         translated_payload = self.controller_translator.get_extracted_controller_values(
-            controller_type=self.selected_controller,
+            state=self.state,
             payload=payload
         )
         # Here i se the factory controller and send the data.

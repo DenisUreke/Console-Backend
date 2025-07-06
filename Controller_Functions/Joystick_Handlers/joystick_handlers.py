@@ -1,6 +1,6 @@
 from Interfaces.controller_handler_interface import InputHandler
 
-class JoystickMoveHandler_STANDARD(InputHandler):
+class JoystickMoveHandler(InputHandler):
     
     def extract(self, payload):
         
@@ -36,7 +36,7 @@ class JoystickMoveHandler_STANDARD(InputHandler):
         else:
             return "unknown"
         
-class JoystickReleaseHandler_STANDARD(InputHandler):
+class JoystickReleaseHandler(InputHandler):
     
     def extract(self, payload):
         return {
@@ -46,7 +46,7 @@ class JoystickReleaseHandler_STANDARD(InputHandler):
             "released": payload.get("released")
         }
 
-class ButtonPressHandler_STANDARD(InputHandler):
+class ButtonPressHandler(InputHandler):
     
     def extract(self, payload):
         return {
@@ -54,15 +54,5 @@ class ButtonPressHandler_STANDARD(InputHandler):
             "player_name": payload.get("player_name"),
             "player_number": payload.get("player_number"),
             "button": payload.get("button")
-        }
-        
-class KeyPadHandler_STANDARD(InputHandler):
-    
-    def extract(self, payload):
-        return {
-            "type": "keypad_move",
-            "player_name": payload.get("player_name"),
-            "player_number": payload.get("player_number"),
-            "direction": payload.get("direction")
         }
         

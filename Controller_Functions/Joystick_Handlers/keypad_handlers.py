@@ -1,6 +1,6 @@
 from Interfaces.controller_handler_interface import InputHandler
 
-class KeypadMoveHandler_STANDARD(InputHandler):
+class KeypadMoveHandler(InputHandler):
     
     def extract(self, payload):
         return {
