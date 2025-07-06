@@ -1,8 +1,5 @@
-from Controller_Functions.Joystick_Handlers.joystick_handlers import (
-    JoystickMoveHandler,
-    JoystickReleaseHandler,
-    ButtonPressHandler,
-)
+from Controller_Functions.Joystick_Handlers.joystick_handlers import (JoystickMoveHandler, JoystickReleaseHandler)
+from Joystick_Handlers.button_handlers import ButtonPressHandler
 from Controller_Functions.Joystick_Handlers.keypad_handlers import KeypadMoveHandler
 
 from Enums.state_enum import State
