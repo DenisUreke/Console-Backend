@@ -7,6 +7,7 @@ from Broadcasting_Manager.broadcasting_manager import BroadcastingManager
 from Controller_Functions.Controller_Translator.controller_translator import ControllerTranslator
 from Orchestrator.orchestrator import Orchestrator
 from Websocket_Service.websocket_service import WebSocketServer
+from Database_Service.database_service import DatabaseService
 
 def initialize_game():
     
@@ -23,6 +24,7 @@ def initialize_game():
     message_parser = MessageParser()
     broadcasting_manager = BroadcastingManager()
     controller_translator = ControllerTranslator()
+    database_service = DatabaseService()
     
     # Initialize orchestrator
     orchestrator = Orchestrator(
@@ -31,7 +33,8 @@ def initialize_game():
         player_manager= player_manager,
         message_parser= message_parser,
         broadcasting_manager= broadcasting_manager,
-        controller_translator= controller_translator
+        controller_translator= controller_translator,
+        database_service= database_service
     )
     
     # Initialize Websocket 

@@ -3,7 +3,7 @@ import pygame
 
 class LobbyModel:
     def __init__(self):
-        self.game_list: Game = Game
+        self.game_list = list(Game)
         self.current_game_selected = Game.PONG
         
         # Game list value
@@ -24,9 +24,9 @@ class LobbyModel:
     def current_selected_game(self, direction):
         
         if direction == "up":
-            index -= 1
+            self.index -= 1
         if direction == "down":
-            index += 1
+            self.index += 1
         
         self.index %= len(self.game_list)
         self.current_game_selected = self.game_list[self.index]

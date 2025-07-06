@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS Pong (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    player_name NVARCHAR(10),
+    player_score INTEGER
+);

@@ -1,4 +1,5 @@
 import pygame
+import time
 from Enums.game_enum import Game
 from Lobby.lobby_model import LobbyModel
 from Interfaces.controller_interface import ControllerInterface
@@ -74,8 +75,9 @@ class LobbyController(ControllerInterface):
         self.model.current_game_selected = current
     
     def handle_joystick_move(self, translated_directon, direction, distance, player_number):
-        if direction == "up" and distance > 50 or direction == "down" and distance > 50:
-            self.model.current_selected_game(direction)
+        
+        if translated_directon == "up" and distance == 60 or translated_directon == "down" and distance == 60:
+            self.model.current_selected_game(translated_directon)
     
     def handle_joystick_release(self, release, player_number):
         pass

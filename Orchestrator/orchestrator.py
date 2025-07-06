@@ -7,6 +7,7 @@ from Sound_Manager.sound_manager import SoundManager
 from Player_Manager.player_manager import PlayerManager
 from Message_Parser.message_parser import MessageParser
 from Broadcasting_Manager.broadcasting_manager import BroadcastingManager
+from Database_Service.database_service import DatabaseService
 from Controller_Functions.Controller_Translator.controller_translator import ControllerTranslator
 from Lobby.lobby_controller import LobbyController
 from Lobby.lobby_view import LobbyView
@@ -22,13 +23,15 @@ class Orchestrator:
         player_manager: PlayerManager, 
         message_parser: MessageParser, 
         broadcasting_manager: BroadcastingManager,
-        controller_translator: ControllerTranslator
+        controller_translator: ControllerTranslator,
+        database_service: DatabaseService
         ):
         
         self.screen = screen
         self.websocket_server = None
         self.player_manager = player_manager
         self.message_parser = message_parser
+        self.database_service = database_service
         self.selected_game = State.LOBBY
         self.sound_manager = sound_manager
         self.broadcasting_manager = broadcasting_manager
@@ -73,6 +76,8 @@ class Orchestrator:
         self.state = State.LOBBY
         
         self.selected_controller = self.state_jscontroller_map.get(self._state, JsControllerType.JS_STANDARD_CONTROLLER)
+        
+        self.database_service.initialize_schema()
         
     @property
     def state(self):
@@ -139,7 +144,6 @@ class Orchestrator:
         
         # function that handles player input
     def handle_player_controls(self, websocket, payload):
-        
         translated_payload = self.controller_translator.get_extracted_controller_values(
             controller_type=self.selected_controller,
             payload=payload
