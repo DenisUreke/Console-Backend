@@ -1,4 +1,5 @@
 import json
+from Enums.controller_enum import Controller
 
 class MessageParser():
     def __init__(self):
@@ -23,7 +24,21 @@ class MessageParser():
                 "player_count": len(player_manager.players)
             }
         }
-        # Convert to JSON
+
         message_json = json.dumps(message)
-        
         return message_json
+    
+    def get_parsed_change_controller(self, controller_type: Controller, player_number = "all"):
+        
+        message = {
+            "type": "controller_change",
+            "data": {
+                "player_number": player_number,
+                "controller_type": controller_type
+            }
+        }
+        
+        message_json = json.dumps(message)
+        return message_json
+    
+    

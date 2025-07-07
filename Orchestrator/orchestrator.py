@@ -2,7 +2,7 @@ import asyncio
 import json
 from Enums.state_enum import State
 from Enums.music_enum import Music
-from Enums.js_controller_enum import JsControllerType
+from Enums.controller_enum import Controller
 from Sound_Manager.sound_manager import SoundManager
 from Player_Manager.player_manager import PlayerManager
 from Message_Parser.message_parser import MessageParser
@@ -51,11 +51,6 @@ class Orchestrator:
             # Add future mappings here
         }
         
-        #mapping of controller types
-        #self.state_jscontroller_map = {
-            #State.LOBBY: JsControllerType.JS_STANDARD_CONTROLLER
-        #}
-        
         self.controller_factory_map = {
             State.LOBBY: lambda: LobbyController(
                 self.screen,
@@ -76,8 +71,6 @@ class Orchestrator:
         }
         
         self.state = State.LOBBY
-        
-        #self.selected_controller = self.state_jscontroller_map.get(self._state, JsControllerType.JS_STANDARD_CONTROLLER)
         
         self.database_service.initialize_schema()
         
@@ -105,9 +98,6 @@ class Orchestrator:
             
         # change the music according to state
         self.change_music_according_to_state(value)
-        
-        # set current controller
-        #self.selected_controller = self.state_jscontroller_map.get(self._state, JsControllerType.JS_STANDARD_CONTROLLER) #  FEL!!!!!!!!!!!!
         
         # broadcast the state to frontend
         if self.websocket_server:
@@ -167,6 +157,8 @@ class Orchestrator:
         else:
             self.state = state
             
+    # ----------------Handle music-------------------------
+            
     def change_music_according_to_state(self, state: State):
         music_enum = self.state_music_map.get(state, None)
         
@@ -182,6 +174,15 @@ class Orchestrator:
     
     def stop_music(self):
         self.sound_manager.stop_music()
+
+    # -------------Handle Controller Change-----------------
+    
+    def change_controller(self, controller_type: Controller, player_number = "all"):
+        
+        message_json = self.message_parser.get_parsed_change_controller(controller_type, player_number)
+        self.broadcasting_manager.broadcast_to_all_connected(self.websocket_server, message_json)
+    
+    
                 
         
         
