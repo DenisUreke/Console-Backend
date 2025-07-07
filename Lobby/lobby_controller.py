@@ -5,6 +5,8 @@ from Lobby.lobby_model import LobbyModel
 from Interfaces.controller_interface import ControllerInterface
 from typing import TYPE_CHECKING
 
+from Enums.controller_enum import Controller
+
 if TYPE_CHECKING:
     from Orchestrator.orchestrator import Orchestrator
 
@@ -49,6 +51,11 @@ class LobbyController(ControllerInterface):
                     player_number = event.get("player_number")
                     self.handle_button_click(button, player_number)
                 
+                case "keypad_move":
+                    direction = event.get("direction")
+                    player_number = event.get("player_number")
+                    self.handle_keypad_move(direction, player_number)
+                    
                 case _:
                     print(f"Unknown event type: {event_type}")
 
@@ -83,7 +90,10 @@ class LobbyController(ControllerInterface):
         pass
     
     def handle_button_click(self, button, player_number):
-        pass
+        self.orchestrator.change_controller(Controller.JOYSTICK)
+    
+    def handle_keypad_move(self, direction, player_number):
+        print(f"direction clicked: {direction}")
     
     def is_leader(self, number):
         

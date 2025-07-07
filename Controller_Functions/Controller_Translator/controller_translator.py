@@ -8,13 +8,13 @@ class ControllerTranslator:
     def __init__(self):
         self.handlers_by_controller_type = {
             State.LOBBY: {
+                "keypad_move": KeypadMoveHandler(),
+                "button_press": ButtonPressHandler(),
+            },
+            State.TEAM_SELECTION: {
                 "button_press": ButtonPressHandler(),
                 "joystick_move": JoystickMoveHandler(),
                 "joystick_release": JoystickReleaseHandler(),
-            },
-            State.TEAM_SELECTION: {
-                "keypad_move": KeypadMoveHandler(),
-                "button_press": ButtonPressHandler(),
             }
         }
 

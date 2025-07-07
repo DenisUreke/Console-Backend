@@ -34,7 +34,7 @@ class MessageParser():
             "type": "controller_change",
             "data": {
                 "player_number": player_number,
-                "controller_type": controller_type
+                "controller_type": controller_type.name
             }
         }
         
