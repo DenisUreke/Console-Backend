@@ -2,6 +2,7 @@ import asyncio
 import json
 from Enums.state_enum import State
 from Enums.music_enum import Music
+from Enums.game_enum import Game
 from Enums.controller_enum import Controller
 from Sound_Manager.sound_manager import SoundManager
 from Player_Manager.player_manager import PlayerManager
@@ -35,7 +36,7 @@ class Orchestrator:
         self.player_manager = player_manager
         self.message_parser = message_parser
         self.database_service = database_service
-        self.selected_game = State.LOBBY
+        self.selected_game = Game.PONG
         self.sound_manager = sound_manager
         self.broadcasting_manager = broadcasting_manager
         self.controller_translator = controller_translator
@@ -171,7 +172,7 @@ class Orchestrator:
         message_json = self.message_parser.get_parsed_player_list(self.player_manager)
         self.broadcasting_manager.broadcast_to_all_connected(self.websocket_server, message_json)
                              
-    def change_state(self, state):
+    def set_state(self, state):
             print(f"Changing state to: {state}")
             self.state = state
             
@@ -195,10 +196,14 @@ class Orchestrator:
 
     # -------------Handle Controller Change-----------------
     
-    def change_controller(self, controller_type: Controller, player_number = "all"):
+    def set_controller(self, controller_type: Controller, player_number = "all"):
         
         message_json = self.message_parser.get_parsed_change_controller(controller_type, player_number)
         self.broadcasting_manager.broadcast_to_all_connected(self.websocket_server, message_json)
+        
+    def set_selected_game(self, game: Game):
+        self.selected_game = game
+        print(f"[DEBUG] Selected game set to: {self.selected_game}")
     
     
                 

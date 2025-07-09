@@ -91,8 +91,9 @@ class LobbyController(ControllerInterface):
         pass
     
     def handle_button_click(self, button, player_number):
-        #self.orchestrator.change_controller(Controller.JOYSTICK)
-        self.orchestrator.change_state(State.TEAM_SELECTION)
+        
+        self.orchestrator.set_selected_game(self.model.current_game_selected)
+        self.orchestrator.set_state(State.TEAM_SELECTION)
     
     def handle_keypad_move(self, direction, player_number):
         print(f"direction clicked: {direction}")

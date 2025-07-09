@@ -26,7 +26,8 @@ class LobbyView(ViewInterface):
         pygame.display.set_caption("Lobby")
         
         # Load background image
-        original_bg = pygame.image.load(ImagePath.LOBBY.value).convert()
+        image_path = ImagePath.get_image_path(self.orchestrator.state)
+        original_bg = pygame.image.load(image_path).convert()
         self.background = pygame.transform.scale(original_bg, self.screen.get_size())
         
     def render(self):
