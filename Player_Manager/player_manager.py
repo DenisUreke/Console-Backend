@@ -3,6 +3,7 @@ from Models.player import Player
 class PlayerManager:
     def __init__(self):
         self.players: list[Player] = []
+        self.game_players_dict: dict = {}
         self.next_player_number = 1
         
     def create_and_append_player(self, name, websocket):

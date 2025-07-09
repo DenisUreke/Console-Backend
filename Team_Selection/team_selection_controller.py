@@ -12,6 +12,7 @@ class TeamSelectionController(ControllerInterface):
         self.sound_manager: SoundManager = sound_manager
         self.model: TeamSelectionModel = model
 
+
     def start(self):
         '''Initialize game state, variables, assets'''
         pass
@@ -40,15 +41,23 @@ class TeamSelectionController(ControllerInterface):
                 print(f"Unknown event type: {event_type}")
 
     def update(self):
-        '''Update game logic (movement, collisions, scores)'''
-        pass
+        
+        if self.model.start_moving:
+            direction = self.model.ending_position - self.model.position
+            if direction.length() < self.model.speed:
+                self.model.position = self.model.ending_position
+                self.moving = False
+            else:
+                self.model.position += direction.normalize() * self.model.speed
     
     def handle_fx(self, event_name: str):
         '''Play sounds associtiated with game events'''
         pass
 
     def handle_button_click(self, button, player_number):
-        pass
+        print("ENTERED BUTTON CLICK")
+        self.model.update_ending_position()
+        self.model.start_moving = True
     
     def handle_keypad_move(self, direction, player_number):
         print(f"direction clicked: {direction}")
