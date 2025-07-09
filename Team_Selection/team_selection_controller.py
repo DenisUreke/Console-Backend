@@ -1,0 +1,54 @@
+from Interfaces.controller_interface import ControllerInterface
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from Orchestrator.orchestrator import Orchestrator
+    from Team_Selection.team_selection_model import TeamSelectionModel
+    from Sound_Manager.sound_manager import SoundManager
+    
+class TeamSelectionController(ControllerInterface):
+    def __init__(self, screen, orchestrator, sound_manager, model):
+        self.screen = screen
+        self.orchestrator: Orchestrator = orchestrator
+        self.sound_manager: SoundManager = sound_manager
+        self.model: TeamSelectionModel = model
+
+    def start(self):
+        '''Initialize game state, variables, assets'''
+        pass
+
+    def stop(self):
+        '''Clean up resources, stop threads/timers'''
+        pass
+
+    def handle_input(self, event):
+        
+        event_type = event.get("type")
+        player_number = event.get("player_number")
+            
+        match event_type: 
+            case "button_press":
+                button = event.get("button")
+                player_number = event.get("player_number")
+                self.handle_button_click(button, player_number)
+                
+            case "keypad_move":
+                direction = event.get("direction")
+                player_number = event.get("player_number")
+                self.handle_keypad_move(direction, player_number)
+                    
+            case _:
+                print(f"Unknown event type: {event_type}")
+
+    def update(self):
+        '''Update game logic (movement, collisions, scores)'''
+        pass
+    
+    def handle_fx(self, event_name: str):
+        '''Play sounds associtiated with game events'''
+        pass
+
+    def handle_button_click(self, button, player_number):
+        pass
+    
+    def handle_keypad_move(self, direction, player_number):
+        print(f"direction clicked: {direction}")

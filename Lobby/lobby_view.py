@@ -23,7 +23,7 @@ class LobbyView(ViewInterface):
         self.game_list = GameList(screen, model)
         
         # set caption
-        pygame.display.set_caption("Pong")
+        pygame.display.set_caption("Lobby")
         
         # Load background image
         original_bg = pygame.image.load(ImagePath.LOBBY.value).convert()

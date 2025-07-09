@@ -12,6 +12,9 @@ from Controller_Functions.Controller_Translator.controller_translator import Con
 from Lobby.lobby_controller import LobbyController
 from Lobby.lobby_view import LobbyView
 from Lobby.lobby_model import LobbyModel
+from Team_Selection.team_selection_view import TeamSelectionView
+from Team_Selection.team_selection_controller import TeamSelectionController
+from Team_Selection.team_selection_model import TeamSelectionModel
 
 
 
@@ -51,12 +54,19 @@ class Orchestrator:
             # Add future mappings here
         }
         
+        # Set controller and view factories for each state
         self.controller_factory_map = {
             State.LOBBY: lambda: LobbyController(
                 self.screen,
                 self,
                 self.sound_manager,
                 LobbyModel()
+        ),
+            State.TEAM_SELECTION: lambda: TeamSelectionController(
+                self.screen,
+                self,
+                self.sound_manager,
+                TeamSelectionModel()
         ),
             # Add more states/controllers here
         }
@@ -67,6 +77,11 @@ class Orchestrator:
                 model,
                 self
         ),
+            State.TEAM_SELECTION: lambda model: TeamSelectionView(
+                self.screen,
+                model,
+                self
+            )
             # Add more states/views here
         }
         
@@ -82,19 +97,25 @@ class Orchestrator:
     def state(self, value):
         self._state = value
         
-        # creating the correct controller based on State
+        print(f"[STATE] Switching controller to: {value}")
+        # assigning the correct controller based on State
         controller_factory = self.controller_factory_map.get(value)
         if controller_factory:
             controller = controller_factory()
             if self.current_controller:
                 self.current_controller.stop()
             self.current_controller = controller
+        print(f"[DEBUG] New controller: {controller}")
             
-        # creating the correct View based on State
+        # assigning the correct View based on State
         view_factory = self.view_factory_map.get(value)
         if view_factory:
             self.current_view = view_factory(controller.model)
             controller.view = self.current_view
+            
+        print(f"[STATE] Switching view to: {value}")
+        print(f"[DEBUG] Controller's model: {controller.model}")
+        print(f"[DEBUG] New view: {self.current_view}")
             
         # change the music according to state
         self.change_music_according_to_state(value)
@@ -151,10 +172,7 @@ class Orchestrator:
         self.broadcasting_manager.broadcast_to_all_connected(self.websocket_server, message_json)
                              
     def change_state(self, state):
-        if self.state == State.LOBBY:
-            self.selected_game = state
-            self.state = State.TEAM_SELECTION
-        else:
+            print(f"Changing state to: {state}")
             self.state = state
             
     # ----------------Handle music-------------------------

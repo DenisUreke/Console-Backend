@@ -139,7 +139,7 @@ class WebSocketServer:
                 ping_timeout=10,
                 close_timeout=10
             )
-            logger.info(f"✅ WebSocket server started on ws://{self.host}:{self.port}")
+            logger.info(f"WebSocket server started on ws://{self.host}:{self.port}")
             
             # Keep the server running
             await self.server.wait_closed()

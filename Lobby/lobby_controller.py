@@ -1,6 +1,7 @@
 import pygame
 import time
 from Enums.game_enum import Game
+from Enums.state_enum import State
 from Lobby.lobby_model import LobbyModel
 from Interfaces.controller_interface import ControllerInterface
 from typing import TYPE_CHECKING
@@ -90,7 +91,8 @@ class LobbyController(ControllerInterface):
         pass
     
     def handle_button_click(self, button, player_number):
-        self.orchestrator.change_controller(Controller.JOYSTICK)
+        #self.orchestrator.change_controller(Controller.JOYSTICK)
+        self.orchestrator.change_state(State.TEAM_SELECTION)
     
     def handle_keypad_move(self, direction, player_number):
         print(f"direction clicked: {direction}")

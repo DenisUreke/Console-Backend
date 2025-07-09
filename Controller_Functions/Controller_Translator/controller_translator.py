@@ -13,6 +13,7 @@ class ControllerTranslator:
             },
             State.TEAM_SELECTION: {
                 "button_press": ButtonPressHandler(),
+                "keypad_move": KeypadMoveHandler(),
                 "joystick_move": JoystickMoveHandler(),
                 "joystick_release": JoystickReleaseHandler(),
             }
