@@ -44,3 +44,6 @@ class PlayerManager:
         
         self.players = new_list
         
+    def is_leader(self, player_number):
+        player = next((p for p in self.players if p.player_number == player_number), None)
+        return player.is_leader if player else False

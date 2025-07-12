@@ -84,19 +84,24 @@ class LobbyController(ControllerInterface):
     
     def handle_joystick_move(self, translated_directon, direction, distance, player_number):
         
-        if translated_directon == "up" and distance == 60 or translated_directon == "down" and distance == 60:
-            self.model.current_selected_game(translated_directon)
+        if self.orchestrator.player_manager.is_leader(player_number):
+        
+            if translated_directon == "up" and distance == 60 or translated_directon == "down" and distance == 60:
+                self.model.current_selected_game(translated_directon)
     
     def handle_joystick_release(self, release, player_number):
         pass
     
     def handle_button_click(self, button, player_number):
-        
-        self.orchestrator.set_selected_game(self.model.current_game_selected)
-        self.orchestrator.set_state(State.TEAM_SELECTION)
+
+        if self.orchestrator.player_manager.is_leader(player_number) and button == "X":
+            self.orchestrator.set_selected_game(self.model.current_game_selected)
+            self.orchestrator.set_state(State.TEAM_SELECTION)
     
     def handle_keypad_move(self, direction, player_number):
-        print(f"direction clicked: {direction}")
+        
+        if self.orchestrator.player_manager.is_leader(player_number):
+            self.model.current_selected_game(direction)
     
     def is_leader(self, number):
         

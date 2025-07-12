@@ -1,4 +1,5 @@
 from Interfaces.controller_interface import ControllerInterface
+from Enums.state_enum import State
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from Orchestrator.orchestrator import Orchestrator
@@ -55,9 +56,13 @@ class TeamSelectionController(ControllerInterface):
         pass
 
     def handle_button_click(self, button, player_number):
-        print("ENTERED BUTTON CLICK")
-        self.model.update_ending_position()
-        self.model.start_moving = True
+        
+        if button == 'O':
+            self.orchestrator.set_state(State.LOBBY)
+            
+        if button == "X":
+            self.model.update_ending_position()
+            self.model.start_moving = True
     
     def handle_keypad_move(self, direction, player_number):
         print(f"direction clicked: {direction}")
