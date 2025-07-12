@@ -22,9 +22,6 @@ class LobbyView(ViewInterface):
         self.game_settings_box = MiddleBox(screen, model)
         self.game_list = GameList(screen, model)
         
-        # set caption
-        pygame.display.set_caption("Lobby")
-        
         # Load background image
         image_path = ImagePath.get_image_path(self.orchestrator.state)
         original_bg = pygame.image.load(image_path).convert()

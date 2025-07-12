@@ -14,11 +14,11 @@ class TeamSelectionPlayers:
         self.players: list[Player] = orchestrator.player_manager.players
         self.center = 420
         
-        '''Create a dictionary to return values so player moved depending on team'''
+        '''Create a dictionary to return values so player name is moved depending on team'''
         self.team = {
-            1: 100,
-            2: 420,
-            3: 740
+            0: 100,
+            1: 420,
+            2: 740
         }
         
         self.reset_team_selection()

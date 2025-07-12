@@ -65,4 +65,6 @@ class TeamSelectionController(ControllerInterface):
             self.model.start_moving = True
     
     def handle_keypad_move(self, direction, player_number):
-        print(f"direction clicked: {direction}")
+            self.orchestrator.player_manager.set_team_selection_position(player_number, direction)
+            
+        

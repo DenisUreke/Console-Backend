@@ -47,3 +47,19 @@ class PlayerManager:
     def is_leader(self, player_number):
         player = next((p for p in self.players if p.player_number == player_number), None)
         return player.is_leader if player else False
+    
+    def evaluate_teamselection_position(self, position: int, direction: str) -> int:
+        delta = {
+            "left": -1,
+            "right": 1
+        }.get(direction, 0)
+        new_value = position + delta
+        new_value = max(0, min(2, new_value))
+        return new_value
+    
+    def set_team_selection_position(self, player_number: int, direction: str):
+        player = next((p for p in self.players if p.player_number == player_number), None)
+        if player:
+            position = self.evaluate_teamselection_position(player.team_selection_position, direction)
+            player.team_selection_position = position
+            #print(f"Player {player.name} team selection position set to {position}")
