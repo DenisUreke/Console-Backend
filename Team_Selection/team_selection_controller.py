@@ -1,4 +1,5 @@
 from Interfaces.controller_interface import ControllerInterface
+from Team_Selection.team_selection_game_rules import GameRulesManager
 from Enums.state_enum import State
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -12,6 +13,7 @@ class TeamSelectionController(ControllerInterface):
         self.orchestrator: Orchestrator = orchestrator
         self.sound_manager: SoundManager = sound_manager
         self.model: TeamSelectionModel = model
+        self.game_rules_manager: GameRulesManager = GameRulesManager(self.orchestrator.player_manager)
 
 
     def start(self):
@@ -66,5 +68,9 @@ class TeamSelectionController(ControllerInterface):
     
     def handle_keypad_move(self, direction, player_number):
             self.orchestrator.player_manager.set_team_selection_position(player_number, direction)
-            
+            if self.game_rules_manager.is_game_ready(self.orchestrator.selected_game):
+                self.model.toggle_game_ready(True)
+            else:
+                self.model.toggle_game_ready(False)
+                
         

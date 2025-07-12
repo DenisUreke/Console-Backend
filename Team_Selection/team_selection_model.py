@@ -20,3 +20,6 @@ class TeamSelectionModel:
             self.screen_width // 2 - 420,
             self.screen_height // 2 - 325 * 4
         )
+    
+    def toggle_game_ready(self, value: bool):
+        self.game_ready = value

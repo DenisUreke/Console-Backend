@@ -13,6 +13,7 @@ class TeamSelectionPlayers:
         self.orchestrator = orchestrator
         self.players: list[Player] = orchestrator.player_manager.players
         self.center = 420
+        self.font_size = 36
         
         '''Create a dictionary to return values so player name is moved depending on team'''
         self.team = {
@@ -23,9 +24,15 @@ class TeamSelectionPlayers:
         
         self.reset_team_selection()
         
-        self.font = pygame.font.Font(None, 36)
+        #self.font = pygame.font.Font(None, 36)
     
     def render(self):
+        if self.model.game_ready:
+            self.font_size = 56
+        else:
+            self.font_size = 36
+            
+        self.font = pygame.font.Font(None, self.font_size)
         loc_x, loc_y = self.model.position.x, self.model.position.y
         
         for index, player in enumerate(self.players):
