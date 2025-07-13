@@ -10,7 +10,7 @@ class TeamSelectionBox:
         self.box = NeonBox(
             self.screen,
             position= (self.model.position.x, self.model.position.y),
-            object_size= (840, 650),
+            object_size= (700, 540),
             overlay_fill_RGBA=(0,0,0,170)
         )
     def render(self):

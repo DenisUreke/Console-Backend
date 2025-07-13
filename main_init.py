@@ -10,38 +10,42 @@ from Websocket_Service.websocket_service import WebSocketServer
 from Database_Service.database_service import DatabaseService
 
 def initialize_game():
-    
-    # Initialize pygame
     pygame.init()
-    screen = pygame.display.set_mode((1280, 720))
+    
+    # Set native/fullscreen display size
+    #screen = pygame.display.set_mode((1920, 1200), pygame.FULLSCREEN) # adjust this for the screen you run on
+    screen = pygame.display.set_mode((960, 640))
     pygame.display.set_caption("DenPi")
     clock = pygame.time.Clock()
     pygame.font.init()
-    
-    # Initialize classes for orchestrator
+
+    # Your fixed game logic resolution
+    game_surface = pygame.Surface((960, 640))
+
+    # Initialize other components
     sounds_manager = SoundManager()
     player_manager = PlayerManager()
     message_parser = MessageParser()
     broadcasting_manager = BroadcastingManager()
     controller_translator = ControllerTranslator()
     database_service = DatabaseService()
-    
-    # Initialize orchestrator
+
     orchestrator = Orchestrator(
-        screen= screen,
-        sound_manager= sounds_manager,
-        player_manager= player_manager,
-        message_parser= message_parser,
-        broadcasting_manager= broadcasting_manager,
-        controller_translator= controller_translator,
-        database_service= database_service
+        screen=game_surface,  # NOTE: Pass game_surface, not screen!
+        sound_manager=sounds_manager,
+        player_manager=player_manager,
+        message_parser=message_parser,
+        broadcasting_manager=broadcasting_manager,
+        controller_translator=controller_translator,
+        database_service=database_service
     )
-    
-    # Initialize Websocket 
+
     server = WebSocketServer(orchestrator)
     orchestrator.websocket_server = server
-    
+
     return {
+        "screen": screen,
+        "game_surface": game_surface,
         "clock": clock,
         "orchestrator": orchestrator,
         "server": server

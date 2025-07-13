@@ -3,17 +3,17 @@ import time
 import threading
 from main_init import initialize_game
 
-# initializing and delegating from main_init
 components = initialize_game()
+screen = components["screen"]
+game_surface = components["game_surface"]
+clock = components["clock"]
 orchestrator = components["orchestrator"]
 server = components["server"]
-clock = components["clock"]
 
-# Start the server (it will create its own thread internally)
+# Start the server
 server.start()
 time.sleep(1)
-print("WebSocket server should be running on ws://192.168.0.31:8765")
-
+print("WebSocket server should be running...")
 
 running = True
 try:
@@ -27,14 +27,16 @@ try:
 
         if orchestrator.current_view:
             orchestrator.current_view.render()
-        
+
+        # scale
+        scaled_surface = pygame.transform.scale(game_surface, screen.get_size())
+        screen.blit(scaled_surface, (0, 0))
         pygame.display.flip()
         clock.tick(60)
 
 except KeyboardInterrupt:
     print("\nShutting down...")
 finally:
-    # Clean shutdown
     server.stop()
     pygame.quit()
     print("Application closed")

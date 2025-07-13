@@ -14,7 +14,7 @@ class GameList:
         pass
     
     def render(self):
-        y = 100
+        y = 120
         for game in self.games:
             if self.model.current_game_selected == game:
                 self.font.set_bold(True)
@@ -23,6 +23,7 @@ class GameList:
                 self.font.set_bold(False)
                 color = (0, 255, 255)
             text = self.font.render(game.value, True, color)
-            self.screen.blit(text, (990, y))
+            #self.screen.blit(text, (990, y))
+            self.screen.blit(text, (700, y))
             y += 40
             

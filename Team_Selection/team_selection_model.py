@@ -7,18 +7,18 @@ class TeamSelectionModel:
         self.game_ready = False
         
         '''Animation values'''
-        self.screen_width = 1280
-        self.screen_height = 720
-        self.starting_position = pygame.Vector2(self.screen_width//2 -420, self.screen_height//2 -1000)
-        self.ending_position = pygame.Vector2(self.screen_width//2 -420, self.screen_height//2-325)
+        self.screen_width = 960
+        self.screen_height = 640
+        self.starting_position = pygame.Vector2(self.screen_width//2 -350, self.screen_height//2 -1000)
+        self.ending_position = pygame.Vector2(self.screen_width//2 -350, self.screen_height//2-270)
         self.position = self.starting_position.copy()
         self.speed = 10
         self.start_moving = True
         
     def update_ending_position(self):
         self.ending_position = pygame.Vector2(
-            self.screen_width // 2 - 420,
-            self.screen_height // 2 - 325 * 4
+            self.screen_width // 2 - 350,
+            self.screen_height // 2 - 270 * 4
         )
     
     def toggle_game_ready(self, value: bool):

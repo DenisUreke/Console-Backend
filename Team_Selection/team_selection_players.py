@@ -18,8 +18,8 @@ class TeamSelectionPlayers:
         '''Create a dictionary to return values so player name is moved depending on team'''
         self.team = {
             0: 100,
-            1: 420,
-            2: 740
+            1: 350,
+            2: 600
         }
         
         self.reset_team_selection()
@@ -35,7 +35,7 @@ class TeamSelectionPlayers:
             
             name_rect = name_surface.get_rect()
             name_rect.centerx = loc_x + self.team[player.team_selection_position]
-            name_rect.top = loc_y + 165 + index * 40
+            name_rect.top = loc_y + 100 + index * 40
             
             self.screen.blit(name_surface, name_rect)
             

@@ -28,7 +28,7 @@ class TeamSelectionGameReadyView:
         text_rect = text.get_rect()
 
         x, y = self.model.position.x, self.model.position.y
-        text_rect.centerx = x + 420
-        text_rect.top     = y + 50
+        text_rect.centerx = x + 350
+        text_rect.top     = y + 30
 
         self.screen.blit(text, text_rect)
