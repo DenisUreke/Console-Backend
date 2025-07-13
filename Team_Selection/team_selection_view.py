@@ -3,6 +3,7 @@ from Enums.image_path_enum import ImagePath
 from Interfaces.view_interface import ViewInterface
 from Team_Selection.team_selection_box import TeamSelectionBox
 from Team_Selection.team_selection_players import TeamSelectionPlayers
+from Team_Selection.team_selection_game_ready import TeamSelectionGameReadyView
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from Orchestrator.orchestrator import Orchestrator
@@ -15,6 +16,7 @@ class TeamSelectionView(ViewInterface):
         
         self.box = TeamSelectionBox(self.screen, self.model)
         self.players = TeamSelectionPlayers(self.screen, self.model, orchestrator)
+        self.ready_text = TeamSelectionGameReadyView(self.screen, self.model)
         
         # Load background image
         image_path = ImagePath.get_image_path(self.orchestrator.state)
@@ -27,3 +29,5 @@ class TeamSelectionView(ViewInterface):
         
         self.box.render()
         self.players.render()
+        if self.model.game_ready:
+            self.ready_text.render()

@@ -18,7 +18,7 @@ class GameRulesManager:
                 "min_players": 2,
                 "game_type": GameType.VERSUS,
             },
-            # more here laters
+            # more rules here laters
         }
     
     def is_game_ready(self, game: Game) -> bool:

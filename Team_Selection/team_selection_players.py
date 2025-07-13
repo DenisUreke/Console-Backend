@@ -24,15 +24,10 @@ class TeamSelectionPlayers:
         
         self.reset_team_selection()
         
-        #self.font = pygame.font.Font(None, 36)
+        self.font = pygame.font.Font(None, 48)
     
     def render(self):
-        if self.model.game_ready:
-            self.font_size = 56
-        else:
-            self.font_size = 36
             
-        self.font = pygame.font.Font(None, self.font_size)
         loc_x, loc_y = self.model.position.x, self.model.position.y
         
         for index, player in enumerate(self.players):
@@ -40,7 +35,7 @@ class TeamSelectionPlayers:
             
             name_rect = name_surface.get_rect()
             name_rect.centerx = loc_x + self.team[player.team_selection_position]
-            name_rect.top = loc_y + 100 + index * 40
+            name_rect.top = loc_y + 165 + index * 40
             
             self.screen.blit(name_surface, name_rect)
             

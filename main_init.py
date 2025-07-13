@@ -14,7 +14,7 @@ def initialize_game():
     # Initialize pygame
     pygame.init()
     screen = pygame.display.set_mode((1280, 720))
-    pygame.display.set_caption("Lobby")
+    pygame.display.set_caption("DenPi")
     clock = pygame.time.Clock()
     pygame.font.init()
     
