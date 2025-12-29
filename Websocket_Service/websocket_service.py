@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class WebSocketServer:
-    def __init__(self, orchestrator, host="192.168.0.31", port=8765):
+    def __init__(self, orchestrator, host="192.168.1.213", port=8765):
         self.host = host
         self.port = port
         self.clients = set()

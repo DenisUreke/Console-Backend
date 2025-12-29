@@ -16,6 +16,10 @@ from Lobby.lobby_model import LobbyModel
 from Team_Selection.team_selection_view import TeamSelectionView
 from Team_Selection.team_selection_controller import TeamSelectionController
 from Team_Selection.team_selection_model import TeamSelectionModel
+import time
+from Pause_Overlay.pause_overlay_model import PauseOverlayModel
+from Pause_Overlay.pause_overlay_controller import PauseOverlayController
+from Pause_Overlay.pause_overlay_view import PauseOverlayView
 
 
 
@@ -42,6 +46,15 @@ class Orchestrator:
         self.controller_translator = controller_translator
         self.current_controller = None
         self.current_view = None
+        self.is_paused = False
+        self.overlay_controller = None
+        self.overlay_view = None
+        self.controller_url = "http://192.168.1.213:4200/"  # change port/path as needed
+        self.qr_surface = None
+
+        # debounce to avoid rapid toggles if button is spammed
+        self._last_pause_toggle_ts = 0.0
+        self._pause_toggle_debounce_s = 0.20
 
         self.message_handlers = {
             "player_join": self.handle_player_join,
@@ -156,16 +169,35 @@ class Orchestrator:
         self.broadcast_player_list()
         print("Player disconnected and removed")
         
+        if len(self.player_manager.players) == 0:
+            # pause only if we aren't already paused
+            if not self.is_paused:
+                self.toggle_pause(paused_by_player_number=None)
+        
         # function that handles player input
     def handle_player_controls(self, websocket, payload):
         translated_payload = self.controller_translator.get_extracted_controller_values(
             state=self.state,
             payload=payload
         )
-        # Here i se the factory controller and send the data.
-        self.current_controller.handle_input(translated_payload)
-        
-        
+
+        if not translated_payload:
+            return
+
+        # 1) Pause toggle always works
+        if translated_payload.get("type") == "pause_toggle":
+            self.toggle_pause(translated_payload.get("player_number"))
+            return
+
+        # 2) If paused, block base input (only overlay can react)
+        if self.is_paused:
+            if self.overlay_controller:
+                self.overlay_controller.handle_input(translated_payload)
+            return
+
+        # 3) Normal behavior
+        if self.current_controller:
+            self.current_controller.handle_input(translated_payload)
     
     def broadcast_player_list(self): #### Klar
         
@@ -204,6 +236,46 @@ class Orchestrator:
     def set_selected_game(self, game: Game):
         self.selected_game = game
         print(f"[DEBUG] Selected game set to: {self.selected_game}")
+        
+    # -------------Pause Functionality-----------------
+    
+    def toggle_pause(self, paused_by_player_number=None):
+        now = time.monotonic()
+        if (now - self._last_pause_toggle_ts) < self._pause_toggle_debounce_s:
+            return
+        self._last_pause_toggle_ts = now
+
+        # --- Turn ON pause ---
+        if not self.is_paused:
+            self.is_paused = True
+
+            # Ensure QR is generated once
+            if self.qr_surface is None:
+                from QR_Code.make_qr_surface import make_qr_surface
+                self.qr_surface = make_qr_surface(self.controller_url, size_px=260)
+
+            model = PauseOverlayModel(
+                paused_by_player_number=paused_by_player_number,
+                url=self.controller_url
+            )
+            self.overlay_controller = PauseOverlayController(self, model)
+            self.overlay_view = PauseOverlayView(self.screen, model, self.qr_surface)
+            self.sound_manager.set_music_volume(0.1)  # lower music volume when paused
+
+        # --- Turn OFF pause ---
+        else:
+            self.is_paused = False
+            if self.overlay_controller:
+                self.overlay_controller.stop()
+            self.overlay_controller = None
+            self.overlay_view = None
+            self.sound_manager.set_music_volume(1)
+
+        # optional: tell clients pause state changed
+        if getattr(self, "websocket_server", None):
+            self.websocket_server.broadcast_state_sync()
+
+
     
     
                 
