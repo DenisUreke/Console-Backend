@@ -15,7 +15,8 @@ class MessageParser():
                 "player_score": player.player_score,
                 "player_lives": player.player_lives,
                 "team_selection_position": player.team_selection_position,
-                "is_in_game": player.is_in_game
+                "is_in_game": player.is_in_game,
+                "color_theme": player.color_theme
             })
         message = {
             "type": "player_list_update",

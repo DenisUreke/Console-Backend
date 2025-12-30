@@ -1,4 +1,5 @@
 from Models.player import Player
+from Enums.colors_enum import COLOR_LIST
 
 class PlayerManager:
     def __init__(self):
@@ -8,8 +9,15 @@ class PlayerManager:
     def create_and_append_player(self, name, websocket):
         
         is_leader = self.assign_leader()
-    
-        player = Player(websocket, name, self.next_player_number, is_leader)    
+        color_theme = self.get_color_theme()
+        
+        player = Player(websocket=websocket, 
+                        name=name, 
+                        player_number=self.next_player_number, 
+                        is_in_game=False, 
+                        is_leader=is_leader, 
+                        color_theme=color_theme)    
+        
         self.players.append(player)
         self.next_player_number += 1
         
@@ -63,3 +71,9 @@ class PlayerManager:
             position = self.evaluate_teamselection_position(player.team_selection_position, direction)
             player.team_selection_position = position
             #print(f"Player {player.name} team selection position set to {position}")
+    
+    def get_color_theme(self ) -> str:
+        idx = len(self.players) % len(COLOR_LIST)
+        return COLOR_LIST[idx].value
+        
+ 
