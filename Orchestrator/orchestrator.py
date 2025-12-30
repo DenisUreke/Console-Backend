@@ -142,6 +142,8 @@ class Orchestrator:
         data = json.loads(message)
         message_type = data.get("type")
         payload = data.get("data", {})
+        
+        print(f"[MESSAGE] Received message of type: {message_type} with payload: {payload}")
 
         handler = self.message_handlers.get(message_type)
 
@@ -185,7 +187,7 @@ class Orchestrator:
             return
 
         # 1) Pause toggle always works
-        if translated_payload.get("type") == "pause_toggle":
+        if translated_payload.get("button") == "pause_toggle":
             self.toggle_pause(translated_payload.get("player_number"))
             return
 
