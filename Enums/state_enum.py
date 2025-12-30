@@ -1,6 +1,7 @@
 from enum import Enum
 
 class State(Enum):
+    WELCOME_SCREEN = "welcome screen"
     LOBBY = "lobby"
     TEAM_SELECTION = "team selection"
     PONG = "pong"

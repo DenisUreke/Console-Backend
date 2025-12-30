@@ -13,6 +13,9 @@ from Controller_Functions.Controller_Translator.controller_translator import Con
 from Lobby.lobby_controller import LobbyController
 from Lobby.lobby_view import LobbyView
 from Lobby.lobby_model import LobbyModel
+from Welcome_Screen.welcome_screen_view import WelcomeScreenView
+from Welcome_Screen.welcome_screen_controller import WelcomeScreenController
+from Welcome_Screen.welcome_screen_model import WelcomeScreenModel
 from Team_Selection.team_selection_view import TeamSelectionView
 from Team_Selection.team_selection_controller import TeamSelectionController
 from Team_Selection.team_selection_model import TeamSelectionModel
@@ -62,6 +65,7 @@ class Orchestrator:
             "player_controls": self.handle_player_controls,
         }
         self.state_music_map = {
+            State.WELCOME_SCREEN: Music.NONE,
             State.LOBBY: Music.LOBBY,
             State.PONG: Music.NONE,
             State.TEAM_SELECTION: Music.TEAM_SELECTION,
@@ -70,6 +74,12 @@ class Orchestrator:
         
         # Set controller and view factories for each state
         self.controller_factory_map = {
+            State.WELCOME_SCREEN: lambda: WelcomeScreenController(
+                self.screen,
+                self,
+                self.sound_manager,
+                WelcomeScreenModel()
+        ),
             State.LOBBY: lambda: LobbyController(
                 self.screen,
                 self,
@@ -86,6 +96,11 @@ class Orchestrator:
         }
 
         self.view_factory_map = {
+            State.WELCOME_SCREEN: lambda model: WelcomeScreenView(
+                self.screen,
+                model,
+                self
+        ),
             State.LOBBY: lambda model: LobbyView(
                 self.screen,
                 model,
@@ -99,7 +114,7 @@ class Orchestrator:
             # Add more states/views here
         }
         
-        self.state = State.LOBBY
+        self.state = State.WELCOME_SCREEN
         
         self.database_service.initialize_schema()
         
