@@ -18,8 +18,8 @@ class TeamSelectionView(ViewInterface):
         self.players = TeamSelectionPlayers(self.screen, self.model, orchestrator)
         self.ready_text = TeamSelectionGameReadyView(self.screen, self.model)
         
-        # Load background image
-        image_path = ImagePath.get_image_path(self.orchestrator.state)
+        # Load background imag, here i can use a swith and get the image depending on game chosen <----------------
+        image_path = ImagePath.get_image_path(self.orchestrator.selected_game)
         original_bg = pygame.image.load(image_path).convert()
         self.background = pygame.transform.scale(original_bg, self.screen.get_size())
         

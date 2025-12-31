@@ -5,4 +5,4 @@ class Game(Enum):
     TETRIS = "Tetris"
     SPACE_INVADERS = "Space Invanders"
     TANK_WARS = "Tank Wars"
-    PAC_MAN = "Pac Man"
+    TRIVIA = "Trivia"
