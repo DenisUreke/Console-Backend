@@ -7,6 +7,10 @@ from Enums.state_enum import State
 class ControllerTranslator:
     def __init__(self):
         self.handlers_by_controller_type = {
+            State.WELCOME_SCREEN: {
+                "keypad_move": KeypadMoveHandler(),
+                "button_press": ButtonPressHandler(),
+            },
             State.LOBBY: {
                 "keypad_move": KeypadMoveHandler(),
                 "button_press": ButtonPressHandler(),

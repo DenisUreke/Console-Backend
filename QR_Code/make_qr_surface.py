@@ -3,7 +3,10 @@ import io
 import qrcode
 import pygame
 
-def make_qr_surface(url: str, size_px: int = 240) -> pygame.Surface:
+def make_qr_surface(size_px: int = 240) -> pygame.Surface:
+    
+    url = "http://192.168.1.213:4200/"
+    
     qr = qrcode.QRCode(
         version=None,
         error_correction=qrcode.constants.ERROR_CORRECT_M,

@@ -25,8 +25,4 @@ class PauseOverlayView:
             self.screen.blit(self.qr_surface, qr_rect)
             y = qr_rect.bottom + 20
 
-        if self.model.url:
-            url_surf = self.sub_font.render(self.model.url, True, (255, 255, 255))
-            self.screen.blit(url_surf, url_surf.get_rect(center=(w//2, y)))
-
 

@@ -1,4 +1,5 @@
 from Welcome_Screen.welcome_screen_model import WelcomeScreenModel
+from Enums.state_enum import State
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from Orchestrator.orchestrator import Orchestrator
@@ -14,6 +15,8 @@ class WelcomeScreenController:
     def update(self): pass
     
     def handle_input(self, translated_payload):
-        pass
+        
+        if translated_payload.get("type") == "button_press":
+            self.orchestrator.set_state(State.LOBBY)
         
         

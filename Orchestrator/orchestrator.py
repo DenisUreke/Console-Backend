@@ -52,7 +52,6 @@ class Orchestrator:
         self.is_paused = False
         self.overlay_controller = None
         self.overlay_view = None
-        self.controller_url = "http://192.168.1.213:4200/"  # change port/path as needed
         self.qr_surface = None
 
         # debounce to avoid rapid toggles if button is spammed
@@ -269,12 +268,9 @@ class Orchestrator:
             # Ensure QR is generated once
             if self.qr_surface is None:
                 from QR_Code.make_qr_surface import make_qr_surface
-                self.qr_surface = make_qr_surface(self.controller_url, size_px=260)
+                self.qr_surface = make_qr_surface(size_px=260)
 
-            model = PauseOverlayModel(
-                paused_by_player_number=paused_by_player_number,
-                url=self.controller_url
-            )
+            model = PauseOverlayModel(paused_by_player_number=paused_by_player_number)
             self.overlay_controller = PauseOverlayController(self, model)
             self.overlay_view = PauseOverlayView(self.screen, model, self.qr_surface)
             self.sound_manager.set_music_volume(0.1)  # lower music volume when paused
