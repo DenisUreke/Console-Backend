@@ -31,6 +31,8 @@ class TeamSelectionPlayers:
         loc_x, loc_y = self.model.position.x, self.model.position.y
         
         for index, player in enumerate(self.players):
+            if not player.connected:
+                continue
             name_surface = self.font.render(player.name, True, (255, 255, 255))
             
             name_rect = name_surface.get_rect()

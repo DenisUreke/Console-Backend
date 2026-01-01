@@ -10,14 +10,15 @@ class PlayerList:
         y = 120
         for player in self.orchestrator.player_manager.players:
             # Create the player text
-            text = self.font.render(f"{player.name}", True, (0, 255, 255))
+            if player.connected:
+                text = self.font.render(f"{player.name}", True, (0, 255, 255))
+
+                # Check if player is leader and add crown
+                if player.is_leader:
+                    crown_text = self.font.render("[L]", True, (255, 215, 0))
+                    #self.screen.blit(crown_text, (70, y))
+                    self.screen.blit(crown_text, (60, y))
             
-            # Check if player is leader and add crown
-            if player.is_leader:
-                crown_text = self.font.render("[L]", True, (255, 215, 0))
-                #self.screen.blit(crown_text, (70, y))
-                self.screen.blit(crown_text, (60, y))
-            
-            #self.screen.blit(text, (110, y))
-            self.screen.blit(text, (90, y))
-            y += 40
+                #self.screen.blit(text, (110, y))
+                self.screen.blit(text, (90, y))
+                y += 40

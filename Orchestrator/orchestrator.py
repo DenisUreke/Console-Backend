@@ -194,7 +194,7 @@ class Orchestrator:
         self.broadcast_player_list()
         print("Player disconnected and removed")
         
-        if len(self.player_manager.players) == 0: #<----------------------- Check here moron
+        if not any(p.connected for p in self.player_manager.players):
             # pause only if we aren't already paused
             if not self.is_paused:
                 self.toggle_pause(paused_by_player_number=None)
