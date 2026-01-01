@@ -169,7 +169,16 @@ class Orchestrator:
     def handle_player_join(self, websocket, payload): ### KLAR
         
         name = payload.get("name")
-        self.player_manager.create_and_append_player(name, websocket)
+        session_token = payload.get("session_token")
+        print(f"[SESSION]Handling player join for {name} with token {session_token}")
+        
+        self.player_manager.handle_player_join(name, websocket, session_token)
+        # call player using specific websocket and give token
+        #self.player_manager.create_and_append_player(name, websocket)
+        player = self.player_manager.get_player(name)
+        print(f"[DEBUG] Player after join: {player}")
+        
+        self.broadcast_session_token(websocket, self.player_manager.get_player(name).session_token) # fucking dumb line
         self.broadcast_player_list()
             
     def change_leader(self, websocket, payload): ########### KLAR
@@ -185,7 +194,7 @@ class Orchestrator:
         self.broadcast_player_list()
         print("Player disconnected and removed")
         
-        if len(self.player_manager.players) == 0:
+        if len(self.player_manager.players) == 0: #<----------------------- Check here moron
             # pause only if we aren't already paused
             if not self.is_paused:
                 self.toggle_pause(paused_by_player_number=None)
@@ -219,6 +228,11 @@ class Orchestrator:
         
         message_json = self.message_parser.get_parsed_player_list(self.player_manager)
         self.broadcasting_manager.broadcast_to_all_connected(self.websocket_server, message_json)
+    
+    def broadcast_session_token(self, websocket, session_token: str): #### Klar
+        
+        message_json = self.message_parser.get_parsed_session_token(session_token)
+        self.broadcasting_manager.broadcast_to_specific_client(websocket, message_json)
                              
     def set_state(self, state):
             print(f"Changing state to: {state}")

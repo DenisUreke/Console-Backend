@@ -23,3 +23,14 @@ class BroadcastingManager():
                 asyncio.create_task(websocket.send(message_json))
             except Exception as e:
                 print(f"Error broadcasting to specific client: {e}")
+                
+    def broadcast_to_specific_clients(self, websocket_server, target_websockets, message_json):
+        if websocket_server:
+            for websocket in target_websockets:
+                try:
+                    # print(f"Broadcasted to specific client: {message_json}")
+                    # Use asyncio to send the message
+                    asyncio.create_task(websocket.send(message_json))
+                except Exception as e:
+                    print(f"Error broadcasting to specific client: {e}")
+    

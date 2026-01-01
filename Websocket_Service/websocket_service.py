@@ -60,8 +60,8 @@ class WebSocketServer:
         except json.JSONDecodeError as e:
             logger.error(f"Invalid JSON received: {e}")
             await self.send_error(websocket, "Invalid JSON format")
-        except Exception as e:
-            logger.error(f"Error processing message EEEEEE: {e}")
+        except Exception:
+            logger.exception("Error processing message")
             await self.send_error(websocket, "Error processing message")
 
     async def send_state(self, websocket):

@@ -42,4 +42,15 @@ class MessageParser():
         message_json = json.dumps(message)
         return message_json
     
+    def get_parsed_session_token(self, session_token: str):
+        message = {
+            "type": "session_token",
+            "data": {
+                "session_token": session_token
+            }
+        }
+        
+        message_json = json.dumps(message)
+        return message_json
+    
     
