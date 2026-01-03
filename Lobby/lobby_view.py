@@ -29,6 +29,9 @@ class LobbyView(ViewInterface):
         image_path = ImagePath.get_image_path(self.orchestrator.state)
         original_bg = pygame.image.load(image_path).convert()
         self.background = pygame.transform.scale(original_bg, self.screen.get_size())
+    
+    def update(self, dt_ms: int):
+        pass
         
     def render(self):
         

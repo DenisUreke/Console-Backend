@@ -54,7 +54,7 @@ class Orchestrator:
         self.overlay_view = None
         self.qr_surface = None
 
-        # debounce to avoid rapid toggles if button is spammed
+        #  avoid rapid toggles if button is spammed
         self._last_pause_toggle_ts = 0.0
         self._pause_toggle_debounce_s = 0.20
 
@@ -133,7 +133,7 @@ class Orchestrator:
             if self.current_controller:
                 self.current_controller.stop()
             self.current_controller = controller
-        print(f"[DEBUG] New controller: {controller}")
+        print(f"[CONTROLLER] New controller: {controller}")
             
         # assigning the correct View based on State
         view_factory = self.view_factory_map.get(value)
@@ -141,9 +141,9 @@ class Orchestrator:
             self.current_view = view_factory(controller.model)
             controller.view = self.current_view
             
-        print(f"[STATE] Switching view to: {value}")
-        print(f"[DEBUG] Controller's model: {controller.model}")
-        print(f"[DEBUG] New view: {self.current_view}")
+        print(f"[VIEW] Switching view to: {value}")
+        print(f"[CONTROLLER] Controller's model: {controller.model}")
+        print(f"[VIEW] New view: {self.current_view}")
             
         # change the music according to state
         self.change_music_according_to_state(value)
@@ -176,7 +176,7 @@ class Orchestrator:
         # call player using specific websocket and give token
         #self.player_manager.create_and_append_player(name, websocket)
         player = self.player_manager.get_player(name)
-        print(f"[DEBUG] Player after join: {player}")
+        print(f"[SESSION] Player after join: {player}")
         
         self.broadcast_session_token(websocket, self.player_manager.get_player(name).session_token) # fucking dumb line
         self.broadcast_player_list()

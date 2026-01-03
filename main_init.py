@@ -14,7 +14,7 @@ def initialize_game():
     
     # Set native/fullscreen display size
     #screen = pygame.display.set_mode((1920, 1200), pygame.FULLSCREEN) # adjust this for the screen you run on
-    screen = pygame.display.set_mode((960, 640))
+    screen = pygame.display.set_mode((1280, 720))
     pygame.display.set_caption("DenPi")
     clock = pygame.time.Clock()
     pygame.font.init()

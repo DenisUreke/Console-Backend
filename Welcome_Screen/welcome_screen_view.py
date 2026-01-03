@@ -14,6 +14,9 @@ class WelcomeScreenView:
         self.sub_font = pygame.font.SysFont(None, 28)
         self.qr_surface = make_qr_surface(size_px=260)
         
+    def update(self, dt_ms: int):
+        pass
+        
     def render(self):
         w, h = self.screen.get_size()
 

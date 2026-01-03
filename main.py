@@ -18,6 +18,9 @@ print("WebSocket server should be running...")
 running = True
 try:
     while running:
+        
+        dt_ms = clock.tick(60)
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -28,6 +31,7 @@ try:
 
         # Always render base view
         if orchestrator.current_view:
+            orchestrator.current_view.update(dt_ms)
             orchestrator.current_view.render()
 
         # Render overlay on top (still on game_surface)
@@ -38,7 +42,6 @@ try:
         scaled_surface = pygame.transform.scale(game_surface, screen.get_size())
         screen.blit(scaled_surface, (0, 0))
         pygame.display.flip()
-        clock.tick(60)
 
 except KeyboardInterrupt:
     print("\nShutting down...")

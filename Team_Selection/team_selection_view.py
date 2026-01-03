@@ -22,7 +22,10 @@ class TeamSelectionView(ViewInterface):
         image_path = ImagePath.get_image_path(self.orchestrator.selected_game)
         original_bg = pygame.image.load(image_path).convert()
         self.background = pygame.transform.scale(original_bg, self.screen.get_size())
-        
+
+    def update(self, dt_ms: int):
+        pass
+    
     def render(self):
         
         self.screen.blit(self.background, (0, 0))

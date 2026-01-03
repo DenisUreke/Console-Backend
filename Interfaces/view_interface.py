@@ -5,6 +5,11 @@ class ViewInterface(ABC):
         self.screen = screen
         self.model = model
         self.orchestrator = orchestrator
+    
+    @abstractmethod
+    def update(self, dt_ms: int):
+        """Updates the view based on the model state"""
+        pass
         
     @abstractmethod
     def render(self):

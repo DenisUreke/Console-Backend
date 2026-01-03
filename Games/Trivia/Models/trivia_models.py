@@ -12,7 +12,7 @@ class TriviaDifficulty(str, Enum):
 
 
 class TriviaType(str, Enum):
-    text_choice = "text_choice"   # keep it simple for now
+    text_choice = "text_choice"   # keep it simple for now moron
 
 
 class TriviaCategory(str, Enum):
