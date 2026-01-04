@@ -8,6 +8,9 @@ class PauseOverlayView:
         self.title_font = pygame.font.SysFont(None, 96)
         self.sub_font = pygame.font.SysFont(None, 28)
 
+    def update(self, dt_ms: int):
+        pass
+
     def render(self):
         w, h = self.screen.get_size()
 

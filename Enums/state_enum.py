@@ -7,5 +7,5 @@ class State(Enum):
     PONG = "pong"
     TETRIS = "Tetris"
     SPACE_INVADERS = "Space Invanders"
-    TANK_WARS = "Tank Wars"
-    PAC_MAN = "Pac Man"
+    RACER = "Racer"
+    TRIVIA = "Trivia"

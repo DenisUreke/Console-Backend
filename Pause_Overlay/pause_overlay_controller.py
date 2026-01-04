@@ -4,7 +4,7 @@ class PauseOverlayController:
         self.model = model
 
     def stop(self): pass
-    def update(self): pass
+    def update(self, dt_ms: int): pass
 
     def handle_input(self, translated_payload):
         if not translated_payload:

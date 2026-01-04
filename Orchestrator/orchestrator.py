@@ -1,5 +1,7 @@
 import asyncio
 import json
+
+from google_crc32c import value
 from Enums.state_enum import State
 from Enums.music_enum import Music
 from Enums.game_enum import Game
@@ -19,10 +21,14 @@ from Welcome_Screen.welcome_screen_model import WelcomeScreenModel
 from Team_Selection.team_selection_view import TeamSelectionView
 from Team_Selection.team_selection_controller import TeamSelectionController
 from Team_Selection.team_selection_model import TeamSelectionModel
+from Games.Trivia.Views.trivial_pursuit_controller import TrivialPursuitController
+from Games.Trivia.Views.trivial_pursuit_model import TriviaPursuitModel
+from Games.Trivia.Views.trivial_pursuit_view import TrivialPursuitView
 import time
 from Pause_Overlay.pause_overlay_model import PauseOverlayModel
 from Pause_Overlay.pause_overlay_controller import PauseOverlayController
 from Pause_Overlay.pause_overlay_view import PauseOverlayView
+from Enums.overlay_enum import OverlayState
 
 
 
@@ -52,6 +58,8 @@ class Orchestrator:
         self.is_paused = False
         self.overlay_controller = None
         self.overlay_view = None
+        self.pause_overlay_view = None
+        self.pause_overlay_controller = None
         self.qr_surface = None
 
         #  avoid rapid toggles if button is spammed
@@ -91,6 +99,12 @@ class Orchestrator:
                 self.sound_manager,
                 TeamSelectionModel()
         ),
+            State.TRIVIA: lambda: TrivialPursuitController(
+                self.screen,
+                self,
+                self.sound_manager,
+                TriviaPursuitModel()
+            )
             # Add more states/controllers here
         }
 
@@ -109,11 +123,27 @@ class Orchestrator:
                 self.screen,
                 model,
                 self
-            )
+        ),
+            State.TRIVIA: lambda model: TrivialPursuitView(
+                self.screen,
+                model,
+                self
+        )
             # Add more states/views here
         }
         
+        ## Overlay Factories
+        
+        self.overlay_controller_factory_map = {
+            OverlayState.NONE: lambda: None,
+            }
+        
+        self.overlay_view_factory_map = {
+            OverlayState.NONE: lambda: None,
+        }
+        
         self.state = State.WELCOME_SCREEN
+        self.overlay_state = OverlayState.NONE
         
         self.database_service.initialize_schema()
         
@@ -151,6 +181,37 @@ class Orchestrator:
         # broadcast the state to frontend
         if self.websocket_server:
             self.websocket_server.broadcast_state_sync()
+            
+    @property
+    def overlay_state(self):
+        return self._overlay_state
+    
+    @overlay_state.setter
+    def overlay_state(self, value):
+        self._overlay_state = value
+        print(f"[OVERLAY] Switching overlay to: {value}")
+
+        # Stop previous overlay controller
+        if self.overlay_controller:
+            self.overlay_controller.stop()
+
+        # NONE = clear overlay
+        if value == OverlayState.NONE:
+            self.overlay_controller = None
+            self.overlay_view = None
+            print("[OVERLAY] Cleared overlay (NONE)")
+            return
+
+        # Build controller safely
+        factory = self.overlay_controller_factory_map.get(value)
+        self.overlay_controller = factory() if factory else None
+
+        # Build view safely
+        view_factory = self.overlay_view_factory_map.get(value)
+        self.overlay_view = view_factory() if view_factory else None
+
+        print(f"[OVERLAY CONTROLLER] {self.overlay_controller}")
+        print(f"[OVERLAY VIEW] {self.overlay_view}")
         
     def handle_message(self, websocket, message):
         data = json.loads(message)
@@ -216,8 +277,8 @@ class Orchestrator:
 
         # 2) If paused, block base input (only overlay can react)
         if self.is_paused:
-            if self.overlay_controller:
-                self.overlay_controller.handle_input(translated_payload)
+            if self.pause_overlay_controller:
+                self.pause_overlay_controller.handle_input(translated_payload)
             return
 
         # 3) Normal behavior
@@ -285,17 +346,17 @@ class Orchestrator:
                 self.qr_surface = make_qr_surface(size_px=260)
 
             model = PauseOverlayModel(paused_by_player_number=paused_by_player_number)
-            self.overlay_controller = PauseOverlayController(self, model)
-            self.overlay_view = PauseOverlayView(self.screen, model, self.qr_surface)
+            self.pause_overlay_controller = PauseOverlayController(self, model)
+            self.pause_overlay_view = PauseOverlayView(self.screen, model, self.qr_surface)
             self.sound_manager.set_music_volume(0.1)  # lower music volume when paused
 
         # --- Turn OFF pause ---
         else:
             self.is_paused = False
-            if self.overlay_controller:
-                self.overlay_controller.stop()
-            self.overlay_controller = None
-            self.overlay_view = None
+            if self.pause_overlay_controller:
+                self.pause_overlay_controller.stop()
+            self.pause_overlay_controller = None
+            self.pause_overlay_view = None
             self.sound_manager.set_music_volume(1)
 
         # optional: tell clients pause state changed
