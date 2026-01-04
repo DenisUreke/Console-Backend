@@ -65,6 +65,9 @@ class TeamSelectionController(ControllerInterface):
         if button == "X":
             self.model.update_ending_position()
             self.model.start_moving = True
+            # Just for testing need to be changed later <------------------------------------ dont forget
+            for player in self.orchestrator.player_manager.players:
+                player.is_in_game = True
             self.orchestrator.set_state(State.TRIVIA)    
     
     def handle_keypad_move(self, direction, player_number):

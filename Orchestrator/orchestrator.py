@@ -24,6 +24,7 @@ from Team_Selection.team_selection_model import TeamSelectionModel
 from Games.Trivia.Views.trivial_pursuit_controller import TrivialPursuitController
 from Games.Trivia.Views.trivial_pursuit_model import TriviaPursuitModel
 from Games.Trivia.Views.trivial_pursuit_view import TrivialPursuitView
+from Games.Trivia.Views.Overlay_Views.trivial_dice_roll_overlay_view import DiceOverlayView
 import time
 from Pause_Overlay.pause_overlay_model import PauseOverlayModel
 from Pause_Overlay.pause_overlay_controller import PauseOverlayController
@@ -136,10 +137,12 @@ class Orchestrator:
         
         self.overlay_controller_factory_map = {
             OverlayState.NONE: lambda: None,
+            OverlayState.TRIVIA_DICE_ROLL: lambda: None,
             }
         
         self.overlay_view_factory_map = {
             OverlayState.NONE: lambda: None,
+            OverlayState.TRIVIA_DICE_ROLL: lambda: DiceOverlayView(self.screen, self.current_controller.model, self)
         }
         
         self.state = State.WELCOME_SCREEN

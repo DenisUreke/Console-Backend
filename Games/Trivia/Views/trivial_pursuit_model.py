@@ -1,6 +1,7 @@
 import pygame
 from Games.Trivia.Models.trivia_game_models import RingTile
 from Games.Trivia.Models.tpp_player_model import TPPlayer, TPPlayerToken
+from Games.Trivia.Enums_Trivia.trivia_camera_mode_enum import TriviaCameraModeEnum
 from Games.Trivia.Enums_Trivia.trivia_state_enum import TPPhase
 from Games.Trivia.Helpers.build_ring_tiles import build_ring_tiles
 from Games.Trivia.Enums_Trivia.trivia_tile_type import StartingLocations, TileType
@@ -12,11 +13,32 @@ class TriviaPursuitModel:
     def __init__(self):
         self.ring_tiles: List[RingTile] = build_ring_tiles()
         self.players: List[TPPlayer] = []
-        self.current_player = None
+        self.current_player_turn: int | None = None
         self.phase = TPPhase.LOBBY
         self.current_tile = None
         
-        self.dice_value: int = 1
+        ##### Camera values ######
+        
+        # Current camera positions
+        self.camera_x = 0
+        self.camera_y = 0
+        # Where we want the camera to go
+        self.camera_target_x = 0
+        self.camera_target_y = 0
+        # (FOLLOW vs TRANSITION)
+        self.camera_mode = TriviaCameraModeEnum.FOLLOW
+        # Speed of camera movement
+        self.camera_speed_px_per_sec = 900
+        
+        # World and viewport sizes
+        self.world_width = 1920
+        self.world_height = 1915
+        self.viewport_width = 960
+        self.viewport_height = 640
+        
+        # Dice assets
+        self.dice_is_rolling = False
+        self.dice_result: int | None = None
         
     def add_player_to_game(self, player_number: int, player_name: str, color: str, websocket_id: str):
         new_player = TPPlayer(
@@ -35,6 +57,50 @@ class TriviaPursuitModel:
             player.player_token.target_x = self.ring_tiles[location_idx].x
             player.player_token.target_y = self.ring_tiles[location_idx].y
             player.ring_index = location_idx
+        
+            
+    def get_current_player(self) -> TPPlayer | None:
+        # return player depending on player number
+        if self.current_player_turn is None:
+            return None
+        return next((p for p in self.players if p.player_number == self.current_player_turn), None)
+    
+    def set_starting_player(self):
+        if self.players:
+            self.current_player_turn = self.players[0].player_number
+
+    def set_next_player_turn(self):
+        if not self.players or self.current_player_turn is None:
+            return
+
+        current_index = next((i for i, p in enumerate(self.players)
+                            if p.player_number == self.current_player_turn), None)
+        if current_index is None:
+            return
+
+        next_index = (current_index + 1) % len(self.players)
+        next_player = self.players[next_index]
+
+        # 1) switch active player
+        self.current_player_turn = next_player.player_number
+
+        # 2) switch camera mode to transition
+        self.camera_mode = TriviaCameraModeEnum.TRANSITION
+
+        # 3) compute centered camera target for that player (Step B math)
+        half_w = self.viewport_width / 2
+        half_h = self.viewport_height / 2
+        max_x = self.world_width - self.viewport_width
+        max_y = self.world_height - self.viewport_height
+
+        tx = next_player.player_token.x - half_w
+        ty = next_player.player_token.y - half_h
+
+        # clamp (reuse your clamp helper if it's in the model; otherwise do it inline)
+        self.camera_target_x = max(0, min(tx, max_x))
+        self.camera_target_y = max(0, min(ty, max_y))
+
+
             
             
     
