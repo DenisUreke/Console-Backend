@@ -25,6 +25,7 @@ from Games.Trivia.Views.trivial_pursuit_controller import TrivialPursuitControll
 from Games.Trivia.Views.trivial_pursuit_model import TriviaPursuitModel
 from Games.Trivia.Views.trivial_pursuit_view import TrivialPursuitView
 from Games.Trivia.Views.Overlay_Views.trivial_dice_roll_overlay_view import DiceOverlayView
+from Games.Trivia.Views.Overlay_Views.trivial_dice_roll_overlay_controller import TriviaOverlayController
 import time
 from Pause_Overlay.pause_overlay_model import PauseOverlayModel
 from Pause_Overlay.pause_overlay_controller import PauseOverlayController
@@ -133,16 +134,25 @@ class Orchestrator:
             # Add more states/views here
         }
         
-        ## Overlay Factories
+        ##### Overlay Factories #####
         
         self.overlay_controller_factory_map = {
             OverlayState.NONE: lambda: None,
-            OverlayState.TRIVIA_DICE_ROLL: lambda: None,
-            }
+            #self, screen, orchestrator, sound_manager, model
+            OverlayState.TRIVIA_DICE_ROLL: lambda: TriviaOverlayController(
+                self.screen,
+                self,
+                self.sound_manager,
+                self.current_controller.model,
+                ),
+        }
         
         self.overlay_view_factory_map = {
             OverlayState.NONE: lambda: None,
-            OverlayState.TRIVIA_DICE_ROLL: lambda: DiceOverlayView(self.screen, self.current_controller.model, self)
+            OverlayState.TRIVIA_DICE_ROLL: lambda: DiceOverlayView(
+                self.screen, 
+                self.current_controller.model, 
+                self)
         }
         
         self.state = State.WELCOME_SCREEN
@@ -283,8 +293,14 @@ class Orchestrator:
             if self.pause_overlay_controller:
                 self.pause_overlay_controller.handle_input(translated_payload)
             return
-
-        # 3) Normal behavior
+        
+        # 3) If an overlay is active, send input to overlay controller and STOP, i am such an idiot
+        if self.overlay_state != OverlayState.NONE:
+            if self.overlay_controller:
+                self.overlay_controller.handle_input(translated_payload)
+            return
+        
+        # 4) Normal behavior
         if self.current_controller:
             self.current_controller.handle_input(translated_payload)
     

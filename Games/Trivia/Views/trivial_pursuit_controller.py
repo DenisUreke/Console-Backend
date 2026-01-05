@@ -1,5 +1,7 @@
 from Games.Trivia.Views.trivial_pursuit_model import TriviaPursuitModel
 from Interfaces.controller_interface import ControllerInterface
+from Enums.overlay_enum import OverlayState
+from Games.Trivia.Views.trivial_pursuit_model import DiceOverlayPhase
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -70,12 +72,16 @@ class TrivialPursuitController(ControllerInterface):
             self.start()
             
         if button == 'X':
-            self.model.set_next_player_turn()
+            #self.model.set_next_player_turn()
+            self.model.dice_phase = DiceOverlayPhase.PROMPT
+            self.model.dice_value = None
+            self.orchestrator.overlay_state = OverlayState.TRIVIA_DICE_ROLL
+
             
-            print("turn:", self.model.current_player_turn,
+            '''print("turn:", self.model.current_player_turn,
             "mode:", self.model.camera_mode,
             "cam:", self.model.camera_x, self.model.camera_y,
-            "target:", self.model.camera_target_x, self.model.camera_target_y)
+            "target:", self.model.camera_target_x, self.model.camera_target_y)'''
     
     def handle_keypad_move(self, direction, player_number):
         pass

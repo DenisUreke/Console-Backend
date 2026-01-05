@@ -7,6 +7,12 @@ from Games.Trivia.Helpers.build_ring_tiles import build_ring_tiles
 from Games.Trivia.Enums_Trivia.trivia_tile_type import StartingLocations, TileType
 from Games.Trivia.Enums_Trivia.trivia_categories_enum import TPWedgeCategory, WEDGE_TO_API, COLOR_TO_WEDGE_CATEGORY, API_TO_WEDGE, WEDGE_CATEGORY_TO_COLOR, WedgeColor
 from typing import List, Optional
+from enum import Enum
+
+class DiceOverlayPhase(Enum):
+    PROMPT = "prompt"   # show "Press X to roll"
+    ROLLING = "rolling" # play animation
+    RESULT = "result"   # show final face, wait for confirmation
 
 
 class TriviaPursuitModel:
@@ -14,7 +20,7 @@ class TriviaPursuitModel:
         self.ring_tiles: List[RingTile] = build_ring_tiles()
         self.players: List[TPPlayer] = []
         self.current_player_turn: int | None = None
-        self.phase = TPPhase.LOBBY
+        self.phase = TPPhase.LOBBY # <-- current game phase
         self.current_tile = None
         
         ##### Camera values ######
@@ -37,8 +43,9 @@ class TriviaPursuitModel:
         self.viewport_height = 640
         
         # Dice assets
-        self.dice_is_rolling = False
-        self.dice_result: int | None = None
+        self.dice_phase = DiceOverlayPhase.PROMPT
+        self.dice_value: int | None = None
+
         
     def add_player_to_game(self, player_number: int, player_name: str, color: str, websocket_id: str):
         new_player = TPPlayer(
