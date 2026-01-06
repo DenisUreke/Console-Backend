@@ -21,11 +21,14 @@ class ControllerTranslator:
                 "joystick_move": JoystickMoveHandler(),
                 "joystick_release": JoystickReleaseHandler(),
             },
-            State.TRIVIA: {
+            State.TRIVIA_LOBBY:{
                 "button_press": ButtonPressHandler(),
                 "keypad_move": KeypadMoveHandler(),
                 "joystick_move": JoystickMoveHandler(),
                 "joystick_release": JoystickReleaseHandler(),
+            },
+            State.TRIVIA: {
+                "button_press": ButtonPressHandler(),
             }
         }
 

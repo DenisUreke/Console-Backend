@@ -1,6 +1,7 @@
 import pygame
 from Games.Trivia.Models.trivia_game_models import RingTile
 from Games.Trivia.Models.tpp_player_model import TPPlayer, TPPlayerToken
+from Games.Trivia.Models.trivia_send_to_front_end import PossibleMove, PossibleMovesData
 from Games.Trivia.Enums_Trivia.trivia_camera_mode_enum import TriviaCameraModeEnum
 from Games.Trivia.Enums_Trivia.trivia_state_enum import TPPhase
 from Games.Trivia.Helpers.build_ring_tiles import build_ring_tiles
@@ -20,7 +21,7 @@ class TriviaPursuitModel:
         self.ring_tiles: List[RingTile] = build_ring_tiles()
         self.players: List[TPPlayer] = []
         self.current_player_turn: int | None = None
-        self.phase = TPPhase.LOBBY # <-- current game phase
+        self.phase = TPPhase.AWAIT_ROLL # <-- current game phase
         self.current_tile = None
         
         ##### Camera values ######
@@ -45,6 +46,10 @@ class TriviaPursuitModel:
         # Dice assets
         self.dice_phase = DiceOverlayPhase.PROMPT
         self.dice_value: int | None = None
+        
+        # Movement assets
+        self.display_possible_moves: bool = False
+        self.possible_move_indices: List[int] = []
 
         
     def add_player_to_game(self, player_number: int, player_name: str, color: str, websocket_id: str):
@@ -106,6 +111,49 @@ class TriviaPursuitModel:
         # clamp (reuse your clamp helper if it's in the model; otherwise do it inline)
         self.camera_target_x = max(0, min(tx, max_x))
         self.camera_target_y = max(0, min(ty, max_y))
+        
+    def set_new_player_location_(self):
+        pass
+    
+    def get_possible_moves(self, dice_value: int) -> List[int]:
+        possible_indices = []
+        current_player = self.get_current_player()
+        if not current_player:
+            return possible_indices
+        
+        start_index = current_player.ring_index
+        ring_size = len(self.ring_tiles)
+        
+        # Clockwise
+        cw_index = (start_index + dice_value) % ring_size
+        possible_indices.append(cw_index)
+        
+        # Counter-Clockwise
+        ccw_index = (start_index - dice_value + ring_size) % ring_size # + ring to ensure we dont get a negative value, you idiot (talking to myself =))
+        if ccw_index != cw_index:
+            possible_indices.append(ccw_index)
+        
+        return possible_indices
+    
+    def build_possible_moves_data(self, dice_value: int, possible_indices: list[int]) -> PossibleMovesData:
+        moves: list[PossibleMove] = []
+
+        for idx in possible_indices:
+            tile = self.ring_tiles[idx]
+
+            moves.append(PossibleMove(
+                index=idx,
+                tile_type=tile.tile_type.name,
+                category=(tile.category.name if tile.category else None)
+            ))
+
+        return PossibleMovesData(dice_value=dice_value, moves=moves)
+
+
+    
+
+
+    
 
 
             

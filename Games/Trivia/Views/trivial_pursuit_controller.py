@@ -1,7 +1,10 @@
 from Games.Trivia.Views.trivial_pursuit_model import TriviaPursuitModel
 from Interfaces.controller_interface import ControllerInterface
 from Enums.overlay_enum import OverlayState
+from Enums.controller_enum import Controller
 from Games.Trivia.Views.trivial_pursuit_model import DiceOverlayPhase
+from Games.Trivia.Enums_Trivia.trivia_state_enum import TPPhase
+from Enums.state_enum import State
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -27,6 +30,8 @@ class TrivialPursuitController(ControllerInterface):
                 
         self.model.set_starting_positions()
         self.model.set_starting_player()
+        self.orchestrator.set_controller(Controller.TRIVIA)
+        self.orchestrator.overlay_state = OverlayState.NONE
 
     def stop(self):
         '''Clean up resources, stop threads/timers'''
@@ -61,15 +66,24 @@ class TrivialPursuitController(ControllerInterface):
     
     def handle_button_click(self, button, player_number):
         
-        if button == 'O':
-            print(f"[TRIVIA]Player {player_number} pressed button {button} in Trivia Pursuit")
+        match self.orchestrator.state:
             
-            print("[TRIVIA] Orchestrator players:")
-            for p in self.orchestrator.player_manager.players:
-                print(
-                    f"  - #{p.player_number} {p.name} | connected={p.connected} | is_in_game={p.is_in_game} | leader={p.is_leader}"
-                )
+          case State.TRIVIA_LOBBY:
             self.start()
+            self.orchestrator.state = State.TRIVIA
+            return
+            
+          case State.TRIVIA:
+            match self.model.phase:
+                case TPPhase.AWAIT_ROLL:
+                    if button == 'X':
+                        self.orchestrator.set_overlay_state(OverlayState.TRIVIA_DICE_ROLL)
+                        return
+        
+        if self.orchestrator.state == State.TRIVIA_LOBBY:
+            self.start()
+            self.orchestrator.state = State.TRIVIA
+            return
             
         if button == 'X':
             #self.model.set_next_player_turn()

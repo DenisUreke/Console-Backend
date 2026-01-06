@@ -3,8 +3,10 @@ from Interfaces.view_interface import ViewInterface
 from Games.Trivia.Views.trivial_pursuit_model import TriviaPursuitModel
 from Games.Trivia.Enums_Trivia.trivia_camera_mode_enum import TriviaCameraModeEnum
 from Games.Trivia.Models.tpp_player_model import TPPlayer
+from Games.Trivia.Enums_Trivia.trivia_state_enum import TPPhase
 from Games.Trivia.Models.tpp_player_model import TPPlayerToken
 from Games.Trivia.Views.Helper_Views.tp_token_animator_renderer import TPTokenAnimatorRenderer
+from Games.Trivia.Views.Helper_Views.tp_move_hint_renderer import TPMoveHintRenderer
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from Orchestrator.orchestrator import Orchestrator
@@ -18,6 +20,7 @@ class TrivialPursuitView(ViewInterface):
         self.bg = pygame.image.load("Games/Trivia/Assets/Images/trivial_pursuit.png").convert()
         self.token_font = pygame.font.Font(None, 48)  # default font, size 20
         self.token_renderer = TPTokenAnimatorRenderer(font=self.token_font, speed_px_per_sec=700, radius=28)
+        self.hint_renderer = TPMoveHintRenderer()
 
 
         # Optional: if you want it to match your game_surface size exactly
@@ -68,6 +71,9 @@ class TrivialPursuitView(ViewInterface):
         if self.model.camera_mode == TriviaCameraModeEnum.TRANSITION:
             if self.model.camera_x == self.model.camera_target_x and self.model.camera_y == self.model.camera_target_y:
                 self.model.camera_mode = TriviaCameraModeEnum.FOLLOW
+        
+        # update move hint animator
+        self.hint_renderer.update(dt_ms)
                 
         # Update all player tokens
         for p in self.model.players:
@@ -98,6 +104,16 @@ class TrivialPursuitView(ViewInterface):
             self.model.viewport_height
         )
         surface.blit(self.bg, (0, 0), camera_rect)
+        
+        # Draw move hints if in CHOOSE_MOVE phase
+        if self.model.phase == TPPhase.CHOOSE_MOVE:
+            self.hint_renderer.render(
+                surface,
+                self.model.ring_tiles,
+                self.model.possible_move_indices,
+                self.model.camera_x,
+                self.model.camera_y
+            )
         
         # Draw all player tokens
         for p in self.model.players:

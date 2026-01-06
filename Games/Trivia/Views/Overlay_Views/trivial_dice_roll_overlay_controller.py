@@ -1,12 +1,19 @@
 
 from Enums.overlay_enum import OverlayState
+from Enums.controller_enum import Controller
+from Games.Trivia.Enums_Trivia.trivia_state_enum import TPPhase
 import random
 from Interfaces.controller_interface import ControllerInterface
 from Games.Trivia.Views.trivial_pursuit_model import DiceOverlayPhase
+from Games.Trivia.Views.trivial_pursuit_model import TriviaPursuitModel
+from Games.Trivia.Models.trivia_send_to_front_end import PossibleMove, PossibleMovesData
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from Orchestrator.orchestrator import Orchestrator
 
 
 class TriviaOverlayController(ControllerInterface):
-    def __init__(self, screen, orchestrator, sound_manager, model):
+    def __init__(self, screen, orchestrator: 'Orchestrator', sound_manager, model: TriviaPursuitModel):
         self.screen = screen
         self.orchestrator = orchestrator
         self.sound_manager = sound_manager
@@ -40,6 +47,8 @@ class TriviaOverlayController(ControllerInterface):
         self.model.dice_phase = DiceOverlayPhase.ROLLING
 
     def _handle_dice(self, event):
+        self.conclude_dice_roll()
+        self.model.phase = TPPhase.CHOOSE_MOVE
         self.orchestrator.overlay_state = OverlayState.NONE
 
     def _handle_question(self, event):
@@ -49,6 +58,7 @@ class TriviaOverlayController(ControllerInterface):
     def start(self):
         '''Initialize game state, variables, assets'''
         pass
+        
     def stop(self):
         '''Clean up resources, stop threads/timers'''
         pass
@@ -58,4 +68,11 @@ class TriviaOverlayController(ControllerInterface):
     def handle_fx(self, event_name: str):
         '''Play sounds associtiated with game events'''
         pass
+    def conclude_dice_roll(self):
+        self.model.possible_move_indices = self.model.get_possible_moves(self.model.dice_value)
+        possible_moves_data: PossibleMovesData = self.model.build_possible_moves_data(self.model.dice_value, self.model.possible_move_indices)
+        package = self.orchestrator.message_parser.trivia_message_parser.get_possible_moves_message(possible_moves_data)
+        self.orchestrator.broadcasting_manager.broadcast_to_specific_client(self.model.get_current_player().websocket_id, package)
+        
+        '''Handle end of dice roll, move to next phase'''
         ...

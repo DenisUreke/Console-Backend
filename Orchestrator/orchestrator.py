@@ -26,6 +26,7 @@ from Games.Trivia.Views.trivial_pursuit_model import TriviaPursuitModel
 from Games.Trivia.Views.trivial_pursuit_view import TrivialPursuitView
 from Games.Trivia.Views.Overlay_Views.trivial_dice_roll_overlay_view import DiceOverlayView
 from Games.Trivia.Views.Overlay_Views.trivial_dice_roll_overlay_controller import TriviaOverlayController
+from Games.Trivia.Views.Overlay_Views.trivia_lobby_overlay_view import TriviaLobbyOverlayView
 import time
 from Pause_Overlay.pause_overlay_model import PauseOverlayModel
 from Pause_Overlay.pause_overlay_controller import PauseOverlayController
@@ -101,12 +102,18 @@ class Orchestrator:
                 self.sound_manager,
                 TeamSelectionModel()
         ),
-            State.TRIVIA: lambda: TrivialPursuitController(
+            State.TRIVIA_LOBBY: lambda: TrivialPursuitController(
                 self.screen,
                 self,
                 self.sound_manager,
                 TriviaPursuitModel()
-            )
+            ),
+            State.TRIVIA: lambda: TrivialPursuitController(
+                self.current_controller.screen,
+                self,
+                self.current_controller.sound_manager,
+                self.current_controller.model
+            ),
             # Add more states/controllers here
         }
 
@@ -126,18 +133,24 @@ class Orchestrator:
                 model,
                 self
         ),
-            State.TRIVIA: lambda model: TrivialPursuitView(
+            State.TRIVIA_LOBBY: lambda model: TriviaLobbyOverlayView(
                 self.screen,
                 model,
                 self
-        )
             # Add more states/views here
+        ),
+            State.TRIVIA: lambda model: TrivialPursuitView(
+                self.current_controller.screen,
+                self.current_controller.model,
+                self
+        )
         }
         
         ##### Overlay Factories #####
         
         self.overlay_controller_factory_map = {
             OverlayState.NONE: lambda: None,
+            
             #self, screen, orchestrator, sound_manager, model
             OverlayState.TRIVIA_DICE_ROLL: lambda: TriviaOverlayController(
                 self.screen,
@@ -149,6 +162,7 @@ class Orchestrator:
         
         self.overlay_view_factory_map = {
             OverlayState.NONE: lambda: None,
+            
             OverlayState.TRIVIA_DICE_ROLL: lambda: DiceOverlayView(
                 self.screen, 
                 self.current_controller.model, 
@@ -317,6 +331,9 @@ class Orchestrator:
     def set_state(self, state):
             print(f"Changing state to: {state}")
             self.state = state
+    def set_overlay_state(self, overlay_state):
+            print(f"Changing overlay state to: {overlay_state}")
+            self.overlay_state = overlay_state
             
     # ----------------Handle music-------------------------
             

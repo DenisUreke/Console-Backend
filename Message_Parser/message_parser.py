@@ -1,9 +1,10 @@
 import json
 from Enums.controller_enum import Controller
+from Message_Parser.trivia_message_parser import TriviaMessageParser
 
 class MessageParser():
     def __init__(self):
-        pass
+        self.trivia_message_parser = TriviaMessageParser()
         
     def get_parsed_player_list(self, player_manager):
         player_list = []
@@ -26,8 +27,7 @@ class MessageParser():
             }
         }
 
-        message_json = json.dumps(message)
-        return message_json
+        return json.dumps(message)
     
     def get_parsed_change_controller(self, controller_type: Controller, player_number = "all"):
         
@@ -39,8 +39,7 @@ class MessageParser():
             }
         }
         
-        message_json = json.dumps(message)
-        return message_json
+        return json.dumps(message)
     
     def get_parsed_session_token(self, session_token: str):
         message = {
@@ -50,7 +49,9 @@ class MessageParser():
             }
         }
         
-        message_json = json.dumps(message)
-        return message_json
+        return json.dumps(message)
+    
+    def get_parsed_trivia_questions(self, questions):
+        return self.trivia_message_parser.get_parsed_trivia_questions(questions)
     
     

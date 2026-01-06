@@ -1,4 +1,5 @@
 from Interfaces.controller_interface import ControllerInterface
+from Enums.overlay_enum import OverlayState
 from Team_Selection.team_selection_game_rules import GameRulesManager
 from Enums.state_enum import State
 from typing import TYPE_CHECKING
@@ -68,7 +69,7 @@ class TeamSelectionController(ControllerInterface):
             # Just for testing need to be changed later <------------------------------------ dont forget
             for player in self.orchestrator.player_manager.players:
                 player.is_in_game = True
-            self.orchestrator.set_state(State.TRIVIA)    
+            self.orchestrator.set_state(State.TRIVIA_LOBBY)
     
     def handle_keypad_move(self, direction, player_number):
             self.orchestrator.player_manager.set_team_selection_position(player_number, direction)

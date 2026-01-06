@@ -38,13 +38,14 @@ class DiceOverlayView(ViewInterface):
             self.dice.update(dt_ms)
 
             result = self.dice.get_result()
+            
             if result is not None:
                 self.model.dice_is_rolling = False
                 self.model.dice_result = result
                 self.model.dice_phase = DiceOverlayPhase.RESULT
             return
 
-        # 3) RESULT phase: do nothing here (controller can close overlay on button press)
+        # 3) RESULT phase: do nothing here (controller can close overlay on button press) <---- brain is not braining
         if self.model.dice_phase == DiceOverlayPhase.RESULT:
             return
 

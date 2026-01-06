@@ -9,3 +9,4 @@ class State(Enum):
     SPACE_INVADERS = "Space Invanders"
     RACER = "Racer"
     TRIVIA = "Trivia"
+    TRIVIA_LOBBY = "trivia_lobby"
