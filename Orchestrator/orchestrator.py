@@ -27,6 +27,7 @@ from Games.Trivia.Views.trivial_pursuit_view import TrivialPursuitView
 from Games.Trivia.Views.Overlay_Views.trivial_dice_roll_overlay_view import DiceOverlayView
 from Games.Trivia.Views.Overlay_Views.trivial_dice_roll_overlay_controller import TriviaOverlayController
 from Games.Trivia.Views.Overlay_Views.trivia_lobby_overlay_view import TriviaLobbyOverlayView
+from Games.Trivia.Views.Overlay_Views.trivial_show_question_overlay_view import ShowQuestionOverlayView
 import time
 from Pause_Overlay.pause_overlay_model import PauseOverlayModel
 from Pause_Overlay.pause_overlay_controller import PauseOverlayController
@@ -158,6 +159,12 @@ class Orchestrator:
                 self.sound_manager,
                 self.current_controller.model,
                 ),
+            OverlayState.TRIVIA_QUESTION: lambda: TriviaOverlayController(
+                self.screen,
+                self,
+                self.sound_manager,
+                self.current_controller.model,
+                ),
         }
         
         self.overlay_view_factory_map = {
@@ -166,7 +173,13 @@ class Orchestrator:
             OverlayState.TRIVIA_DICE_ROLL: lambda: DiceOverlayView(
                 self.screen, 
                 self.current_controller.model, 
-                self)
+                self
+            ),
+            OverlayState.TRIVIA_QUESTION: lambda: ShowQuestionOverlayView(
+                self.screen, 
+                self.current_controller.model, 
+                self
+                ),
         }
         
         self.state = State.WELCOME_SCREEN
@@ -331,6 +344,7 @@ class Orchestrator:
     def set_state(self, state):
             print(f"Changing state to: {state}")
             self.state = state
+            
     def set_overlay_state(self, overlay_state):
             print(f"Changing overlay state to: {overlay_state}")
             self.overlay_state = overlay_state

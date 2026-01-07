@@ -13,14 +13,14 @@ def initialize_game():
     pygame.init()
     
     # Set native/fullscreen display size
-    #screen = pygame.display.set_mode((1920, 1200), pygame.FULLSCREEN) # adjust this for the screen you run on
+    #screen = pygame.display.set_mode((1920, 1200), pygame.FULLSCREEN) 1280, 720 / 960, 640
     screen = pygame.display.set_mode((1280, 720))
     pygame.display.set_caption("DenPi")
     clock = pygame.time.Clock()
     pygame.font.init()
 
     # Your fixed game logic resolution
-    game_surface = pygame.Surface((960, 640))
+    game_surface = pygame.Surface((1280, 720))
 
     # Initialize other components
     sounds_manager = SoundManager()

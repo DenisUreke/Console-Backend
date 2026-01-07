@@ -76,5 +76,15 @@ COLOR_TO_WEDGE_CATEGORY = {
     WedgeColor.ORANGE: TPWedgeCategory.SPORTS_AND_LEISURE,
 }
 
+TP_TO_TRIVIA_CATEGORY = {
+    TPWedgeCategory.GEOGRAPHY: TriviaCategory.geography,
+    TPWedgeCategory.HISTORY: TriviaCategory.history,
+    TPWedgeCategory.SCIENCE: TriviaCategory.science,
+    TPWedgeCategory.ARTS: TriviaCategory.arts_and_literature,
+    TPWedgeCategory.ENTERTAINMENT: TriviaCategory.film_and_tv,
+    TPWedgeCategory.SPORTS_AND_LEISURE: TriviaCategory.sport_and_leisure,
+}
+
+
 
 

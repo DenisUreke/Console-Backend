@@ -33,7 +33,6 @@ class TriviaMessageParser():
 
         return json.dumps(message)
     
-
     def get_possible_moves_message(self, possible_moves_data: PossibleMovesData):
         message = {
             "type": "trivia",

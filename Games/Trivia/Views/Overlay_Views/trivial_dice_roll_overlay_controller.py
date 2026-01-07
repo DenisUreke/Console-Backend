@@ -50,6 +50,7 @@ class TriviaOverlayController(ControllerInterface):
         self.conclude_dice_roll()
         self.model.phase = TPPhase.CHOOSE_MOVE
         self.orchestrator.overlay_state = OverlayState.NONE
+        self.model.dice_phase = DiceOverlayPhase.PROMPT
 
     def _handle_question(self, event):
         # Example: joystick selects answer, X confirms
@@ -73,6 +74,7 @@ class TriviaOverlayController(ControllerInterface):
         possible_moves_data: PossibleMovesData = self.model.build_possible_moves_data(self.model.dice_value, self.model.possible_move_indices)
         package = self.orchestrator.message_parser.trivia_message_parser.get_possible_moves_message(possible_moves_data)
         self.orchestrator.broadcasting_manager.broadcast_to_specific_client(self.model.get_current_player().websocket_id, package)
+        self.model.dice_value = None
         
         '''Handle end of dice roll, move to next phase'''
         ...

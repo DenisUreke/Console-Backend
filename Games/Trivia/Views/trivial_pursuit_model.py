@@ -7,6 +7,7 @@ from Games.Trivia.Enums_Trivia.trivia_state_enum import TPPhase
 from Games.Trivia.Helpers.build_ring_tiles import build_ring_tiles
 from Games.Trivia.Enums_Trivia.trivia_tile_type import StartingLocations, TileType
 from Games.Trivia.Enums_Trivia.trivia_categories_enum import TPWedgeCategory, WEDGE_TO_API, COLOR_TO_WEDGE_CATEGORY, API_TO_WEDGE, WEDGE_CATEGORY_TO_COLOR, WedgeColor
+from Games.Trivia.Models.trivia_models import TriviaQuestion
 from typing import List, Optional
 from enum import Enum
 
@@ -40,8 +41,8 @@ class TriviaPursuitModel:
         # World and viewport sizes
         self.world_width = 1920
         self.world_height = 1915
-        self.viewport_width = 960
-        self.viewport_height = 640
+        self.viewport_width = 1280
+        self.viewport_height = 720
         
         # Dice assets
         self.dice_phase = DiceOverlayPhase.PROMPT
@@ -50,6 +51,11 @@ class TriviaPursuitModel:
         # Movement assets
         self.display_possible_moves: bool = False
         self.possible_move_indices: List[int] = []
+        
+        # Question assets
+        self.current_question: str | None = None
+        self.current_choices: List[str] = []
+        self.correct_answer_index: int | None = None
 
         
     def add_player_to_game(self, player_number: int, player_name: str, color: str, websocket_id: str):
@@ -148,6 +154,14 @@ class TriviaPursuitModel:
             ))
 
         return PossibleMovesData(dice_value=dice_value, moves=moves)
+    
+    def set_camera_mode(self, mode: TriviaCameraModeEnum):
+        self.camera_mode = mode
+        
+    def set_question_values(self, question: TriviaQuestion):
+        self.current_question = question.question
+        self.current_choices = question.answers
+        self.correct_answer_index = question.correct_index
 
 
     
