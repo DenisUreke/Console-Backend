@@ -107,6 +107,8 @@ class TrivialPursuitController(ControllerInterface):
     
     def move_player_token(self, button, player_number):
         button_value = int(button)
+        player = self.model.get_current_player() ## ADDED
+        player.ring_index = button_value ## ADDED
         self.update_token_location(player_number, button_value)
         self.model.phase = TPPhase.MOVING
         self.model.set_camera_mode(TriviaCameraModeEnum.FOLLOW)
@@ -167,6 +169,10 @@ class TrivialPursuitController(ControllerInterface):
             self.model.set_question_values(questions[0])
             self.model.phase = TPPhase.QUESTION
             self.orchestrator.set_overlay_state(OverlayState.TRIVIA_QUESTION)
+            
+            # send question to all players
+            package = self.orchestrator.message_parser.trivia_message_parser.get_parsed_trivia_questions(questions)
+            self.orchestrator.broadcasting_manager.broadcast_to_all_connected(self.orchestrator.websocket_server, package)
             
 
         except TriviaGatewayError as e:
