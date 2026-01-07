@@ -12,8 +12,8 @@ class LobbyModel:
         # middle-screen data
         #self.starting_pos = pygame.Vector2(400, -800)
         #self.end_pos = pygame.Vector2(400, 50)
-        self.starting_pos = pygame.Vector2(330, -800)
-        self.end_pos = pygame.Vector2(310, 40)
+        self.starting_pos = pygame.Vector2(440, -900)
+        self.end_pos = pygame.Vector2(413, 45)
         self.position = self.starting_pos.copy()
         self.ms_speed = 10
         self.ms_start_moving = True

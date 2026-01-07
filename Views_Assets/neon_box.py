@@ -4,7 +4,7 @@ class NeonBox:
     def __init__(
         self, 
         screen, 
-        object_size=(250, 480), 
+        object_size=(300, 480), 
         overlay_fill_RGBA=(0, 0, 0, 0), 
         rectangle_colors=((0, 255, 255, 40), (0, 255, 255, 80), (0, 255, 255, 200)),
         rectangle_border_width=(10, 6, 4),

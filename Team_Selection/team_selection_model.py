@@ -7,8 +7,8 @@ class TeamSelectionModel:
         self.game_ready = False
         
         '''Animation values'''
-        self.screen_width = 960
-        self.screen_height = 640
+        self.screen_width = 1280
+        self.screen_height = 720
         self.starting_position = pygame.Vector2(self.screen_width//2 -350, self.screen_height//2 -1000)
         self.ending_position = pygame.Vector2(self.screen_width//2 -350, self.screen_height//2-270)
         self.position = self.starting_position.copy()

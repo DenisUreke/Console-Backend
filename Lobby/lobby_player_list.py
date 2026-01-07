@@ -7,7 +7,7 @@ class PlayerList:
         self.font = pygame.font.Font(None, 36)
 
     def render(self):
-        y = 120
+        y = 135
         for player in self.orchestrator.player_manager.players:
             # Create the player text
             if player.connected:
@@ -17,8 +17,8 @@ class PlayerList:
                 if player.is_leader:
                     crown_text = self.font.render("[L]", True, (255, 215, 0))
                     #self.screen.blit(crown_text, (70, y))
-                    self.screen.blit(crown_text, (60, y))
+                    self.screen.blit(crown_text, (80, y))
             
                 #self.screen.blit(text, (110, y))
-                self.screen.blit(text, (90, y))
-                y += 40
+                self.screen.blit(text, (120, y))
+                y += 45

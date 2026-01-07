@@ -21,7 +21,7 @@ class MiddleBox:
             position=(int(self.position.x), int(self.position.y)), 
             overlay_fill_RGBA=(0, 0, 0, 170), 
             #object_size=(480, 620)
-            object_size=(340, 560)
+            object_size=(453, 630)
         )
         game_settings_box.render()
 
@@ -33,9 +33,9 @@ class MiddleBox:
         text_rect = text_surface.get_rect()
 
         # Calculate center position
-        box_width, box_height = 340, 560
+        box_width, box_height = 453, 630
         box_x, box_y = int(self.position.x), int(self.position.y)
-        text_rect.center = (box_x + box_width // 2, box_y + 50)
+        text_rect.center = (box_x + box_width // 2, box_y + 56)
 
         # Draw the centered text
         self.screen.blit(text_surface, text_rect)
