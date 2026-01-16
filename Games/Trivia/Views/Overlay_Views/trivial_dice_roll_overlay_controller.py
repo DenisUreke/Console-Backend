@@ -23,6 +23,8 @@ class TriviaOverlayController(ControllerInterface):
         # If no overlay, ignore
         if self.orchestrator.overlay_state == OverlayState.NONE:
             return
+        
+        button = event.get("button")
 
         # Global overlay controls (works everywhere)
         if event["type"] == "button_press" and event["button"] == "O":
@@ -40,7 +42,8 @@ class TriviaOverlayController(ControllerInterface):
                     self._handle_dice(event)
                     
             case OverlayState.TRIVIA_QUESTION:
-                self._handle_question(event)
+                if self.model.phase == TPPhase.QUESTION:
+                    self._handle_question_answer(button)
 
     def handle_start_roll(self, event):
         self.model.dice_value = random.randint(1, 6) # Simulate dice roll
@@ -52,9 +55,16 @@ class TriviaOverlayController(ControllerInterface):
         self.orchestrator.overlay_state = OverlayState.NONE
         self.model.dice_phase = DiceOverlayPhase.PROMPT
 
-    def _handle_question(self, event):
-        # Example: joystick selects answer, X confirms
-        pass
+    def _handle_question_answer(self, button):
+        # check if button corresponds to an correct answer
+        # do what needs to be done based on correctness
+        answer_index = int(button)
+        if answer_index == self.model.correct_answer_index:
+            # Correct answer logic
+            pass
+        else:
+            # Incorrect answer logic
+            pass
     
     def start(self):
         '''Initialize game state, variables, assets'''
