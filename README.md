@@ -36,3 +36,7 @@ Both backend and frontend use an “orchestrator” approach:
 - Connect your phone to the same network and open the controller URL (or scan the QR code)
 
 > This project is under active development and the architecture will evolve as more games and controller types are added.
+
+
+https://github.com/user-attachments/assets/cf4e0720-5609-4be8-9e5e-f0e6749424bc
+
